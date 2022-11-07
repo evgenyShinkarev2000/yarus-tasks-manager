@@ -13,6 +13,11 @@
     "useDefineForClassFields": true,
     "sourceMap": true,
     "baseUrl": ".",
+    // my changes begin
+    "noUnusedLocals": false,
+    "strictPropertyInitialization": false,
+
+    // my changes end
     "types": [
       "webpack-env"
     ],
