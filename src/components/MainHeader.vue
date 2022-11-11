@@ -1,6 +1,6 @@
 <template>
   <header>
-    <div class="header-container">
+    <div class="main-header-container">
       <div class="left">
         <h1 class="h1-font">
           <span class="deep-blue">Ярус.</span><span class="light-blue">Планировщик</span>
@@ -41,12 +41,13 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 header {
+  height: calc(60 * var(--shpx));
   display: flex;
   justify-content: center;
+  background-color: $white;
 
-  .header-container {
-    width: calc(1612 * var(--swpx));
-    height: calc(60 * var(--shpx));
+  .main-header-container {
+    height: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;

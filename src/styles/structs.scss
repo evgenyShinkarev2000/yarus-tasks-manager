@@ -1,0 +1,18 @@
+.main-container{
+  width: calc(1620 * var(--swpx));
+}
+.controls-container{
+  @extend .main-container;
+}
+.main-header-container{
+  @extend .main-container;
+}
+.tasks-container{
+  @extend .main-container;
+}
+.center-x{
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+$column-width: 300;
