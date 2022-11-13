@@ -1,5 +1,6 @@
+$main-container-width: 1620;
 .main-container{
-  width: calc(1620 * var(--swpx));
+  width: calc($main-container-width * var(--swpx));
 }
 .controls-container{
   @extend .main-container;

@@ -1,23 +1,15 @@
 <template>
-  <main class="backround-grey paddings">
-    <div class="controls">
-      <Controls></Controls>
+  <div class="wrapper">
+    <Controls></Controls>
+    <div class="main">
+      <div class="scroll-button left"></div>
+      <div class="columns">
+        <Column v-for:="i of [0, 1, 2, 3, 4]"></Column>
+      </div>
+      <div class="scroll-button right rotate-180"></div>
     </div>
-    <section class="wrapper">
-      <div class="left scroll-button">
-        <img class="arrow" src="@/assets/arrow-icon.png">
-      </div>
-      <div class="center">
-        <div class="main-container">
-          <Column class="column" v-for="i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]" :key="i"></Column>
-        </div>
-      </div>
-      <div class="right scroll-button">
-        <img class="arrow rotate-180" src="@/assets/arrow-icon.png">
-      </div>
-    </section>
+  </div>
 
-  </main>
   <!-- <img class="mock-img" src="@/assets/tasks.png"> -->
 </template>
   
@@ -34,46 +26,35 @@ export default defineComponent({
   
   <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-main {
+$prevent-shadow-cut: 10;
+
+.wrapper {
+  padding-block: calc(20 * var(--shpx));
+  padding-inline: calc(20 * var(--swpx));
+  box-sizing: border-box;
   height: 100%;
-  padding: calc(20 * var(--swpx));
-  background-color: $light-grey;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  width: 100%;
+  display: grid;
+  grid-template-rows: min-content auto;
+  row-gap: calc((20 - $prevent-shadow-cut) * var(--shpx));
 
-  .controls {
-    margin-bottom: calc(20 * var(--swpx));
-  }
-
-  .wrapper {
-    justify-self: center;
+  .main {
     display: grid;
-    width: fit-content;
-    height: 100%;
-    grid-template-columns: calc(44 * var(--swpx)) auto calc(44 * car(--swpx));
-    grid-template-rows: 100%;
+    justify-self: center;
+    grid-template-columns: min-content calc(($main-container-width + 22) * var(--swpx)) min-content; // чтобы добавить padding и не резать тень
+    column-gap: calc(11 * var(--swpx));
 
     .left {
       grid-column: 1;
     }
 
-    .center {
+    .columns {
       grid-column: 2;
-      padding-inline: calc(22 * var(--swpx));
-      overflow-x: hidden;
-      
-      .main-container{
-        height: 100%;
-        overflow: visible;
-        display: flex;
-        justify-content: space-between;
-        gap: calc(28 * var(--swpx));
-      }
-
-      .column {
-
-      }
+      padding-block: calc(10 * var(--shpx));
+      box-sizing: border-box;
+      display: flex;
+      justify-content: space-between;
+      padding-inline: calc(11 * var(--swpx));
     }
 
     .right {
@@ -82,19 +63,19 @@ main {
   }
 }
 
+
 .scroll-button {
   width: calc(44 * var(--swpx));
-  grid-row: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   border-radius: 13px;
   background-color: rgba($white, 0.4);
   box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.25);
-}
-
-.arrow {
-  width: calc(22 * var(--swpx));
+  background-image: url("@/assets/arrow-icon.png");
+  background-size: calc(22 * var(--swpx));
+  background-repeat: no-repeat;
+  background-position: center center;
+  box-sizing: border-box;
+  margin-top: calc(10 * var(--shpx));
+  margin-bottom: calc(30 * var(--shpx));
 }
 
 .mock-img {
