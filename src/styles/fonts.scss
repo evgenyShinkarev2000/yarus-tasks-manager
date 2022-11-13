@@ -52,5 +52,22 @@
   color: $dark-grey;
 }
 
+.drop-down-label-1-font {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 600;
+  font-size: calc(16 * var(--swpx));
+  line-height: calc(20 * var(--swpx));
+  color: $grey-2;
+}
+.drop-down-item-1-font {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 600;
+  font-size: calc(16 * var(--swpx));
+  line-height: calc(20 * var(--swpx));
+  color: $black;
+}
+
 $span-gap-1: 1rem;
 $span-gap-2: 2rem;

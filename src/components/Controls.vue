@@ -3,7 +3,7 @@
     <div class="controls-container controls">
       <div class="left">
         <DropDownList :place-holder="'Все проекты'" :options="['1', '2', '3']"></DropDownList>
-        <DropDownList :place-holder="'Мои задачи'" :options="['1', '2', '3']"></DropDownList>
+        <DropDownList :place-holder="'Мои задачи'" :options="['a', 'b', 'c']"></DropDownList>
       </div>
       <div class="right">
         <button class="create-btn button-font-1">Создать новую задачу</button>
