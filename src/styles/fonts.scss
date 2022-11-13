@@ -25,6 +25,15 @@
   color: black;
 }
 
+.h4-font{
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 600;
+  font-size: calc(16 * var(--swpx));
+  line-height: calc(19.5 * var(--swpx));
+  color: black;
+}
+
 .link1-font {
   font-family: 'Montserrat';
   font-style: normal;
@@ -49,6 +58,14 @@
   font-weight: 600;
   font-size: calc(20 * var(--swpx));
   line-height: calc(24 * var(--swpx));
+  color: $dark-grey;
+}
+.secondary-2-font{
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 600;
+  font-size: calc(14 * var(--swpx));
+  line-height: calc(17 * var(--swpx));
   color: $dark-grey;
 }
 

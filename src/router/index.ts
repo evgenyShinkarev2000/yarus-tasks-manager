@@ -12,7 +12,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/auth',
     name: 'login',
-    component: () => import('@/components/AuthPage.vue'),
+    component: () => import('@/pages/AuthPage.vue'),
   },
   {
     path: '/workPlace',
