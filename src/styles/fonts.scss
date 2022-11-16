@@ -51,6 +51,36 @@
   line-height: calc(24 * var(--swpx));
   color: $white;
 }
+.header-secondary-2-font{
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 500;
+  font-size: calc(24 * var(--swpx));
+  line-height: calc(29 * var(--swpx));
+  color: $grey-2;
+}
+
+.input-secondary-2-font{
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 500;
+  font-size: calc(24 * var(--swpx));
+  line-height: calc(24 * var(--swpx));
+  height: calc(22 * var(--swpx));
+  padding-bottom: calc(4 * var(--swpx));
+  color: $grey-2;
+}
+
+.input-2-font{
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 500;
+  font-size: calc(24 * var(--swpx));
+  line-height: calc(24 * var(--swpx));
+  height: calc(22 * var(--swpx));
+  padding-bottom: calc(4 * var(--swpx));
+  color: $black;
+}
 
 .secondary1-font {
   font-family: 'Montserrat';

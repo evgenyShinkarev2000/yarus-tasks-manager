@@ -1,0 +1,1 @@
+export type FormFieldAppearance = "text" | "password" | 'login';

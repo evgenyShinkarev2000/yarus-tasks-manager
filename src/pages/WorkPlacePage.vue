@@ -4,7 +4,7 @@
     <MainHeader></MainHeader>
   </div>
   <div class="content">
-    <RouterView></RouterView>
+    <router-view />
   </div>
   </div>
 </template>
