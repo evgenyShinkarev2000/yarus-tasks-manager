@@ -2,8 +2,8 @@
   <section class="center-x">
     <div class="controls-container controls">
       <div class="left">
-        <DropDownList :place-holder="'Все проекты'" :options="['1', '2', '3']"></DropDownList>
-        <DropDownList :place-holder="'Мои задачи'" :options="['a', 'b', 'c']"></DropDownList>
+        <DropDownList :options="projectOptions" :default-index="0"></DropDownList>
+        <DropDownList :options="taskContractorOptions" :default-index="0"></DropDownList>
       </div>
       <div class="right">
         <button class="create-btn button-font-1">Создать новую задачу</button>
@@ -16,15 +16,24 @@
 import { defineComponent } from 'vue';
 import { services } from '@/main';
 import DropDownList from './DropDownList.vue';
+import { IIdPairName } from '@/interfaces/IIdPairName';
+
 
 export default defineComponent({
   name: "Controls",
   data() {
     return {
-      services
+      services,
+      projectOptions: [] as IIdPairName[],
+      taskContractorOptions: [{id:"1", name:"Только мои"}, {id:"2", name:"Все задачи"}] as IIdPairName[]
     };
   },
-  components: { DropDownList }
+  components: { DropDownList },
+  mounted(){
+    services.resourceManager.getProjects().then((data) => {
+      this.projectOptions = data;
+    });
+  }
 });
 </script>
     

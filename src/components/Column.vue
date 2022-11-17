@@ -1,7 +1,7 @@
 <template>
   <div class="column">
     <div class="title h2-font"> Статус </div>
-    <div class="cards">
+    <div class="cards tasks-scrollbar">
       <div class="card" v-for:="i of [1, 2, 3, 4, 5, 6, 7, 8 ,9, 10 , 11]" :key="i">
         <TaskCard></TaskCard>
       </div>
@@ -20,13 +20,14 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .column {
-  height: calc(880 * var(--shpx)); // не работате скролл без фиксированной высоты. 
+  height: calc(880 * var(--shpx)); // не работат скролл без фиксированной высоты. 
   display: flex;
   flex-direction: column;
   background-color: $grey-1;
   box-shadow: 0px 0px 7.5px rgba(0, 0, 0, 0.25);
   border-radius: 15px;
   width: calc(300 * var(--swpx));
+  box-sizing: border-box;
 
   .title {
     padding-top: calc(12 * var(--shpx));

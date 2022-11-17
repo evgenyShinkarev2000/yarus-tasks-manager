@@ -1,0 +1,16 @@
+.tasks-scrollbar::-webkit-scrollbar {
+  background-color: $grey-1-1;
+  width: calc(18 * var(--swpx));
+  background-clip: padding-box !important;
+  border-right: calc(8 * var(--swpx)) solid transparent;
+}
+
+.tasks-scrollbar::-webkit-scrollbar-thumb {
+  border-right: calc(8 * var(--swpx)) solid transparent;
+  background-clip: padding-box !important;
+  background: $grey-1-2;
+}
+.tasks-scrollbar{
+  scrollbar-color: $grey-1-2 $grey-1-1;
+  scrollbar-width: thin;
+}
