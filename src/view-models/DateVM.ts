@@ -1,5 +1,7 @@
-export class DateVM extends Date{
+export class DateVM{
+  public readonly date: Date = new Date();
+
   public get dateStringOnly(): string{
-    return `${this.getDate()}.${this.getMonth()}.${this.getFullYear()}`
+    return `${this.date.getDate()}.${this.date.getMonth()}.${this.date.getFullYear()}`
   }
 }

@@ -1,20 +1,72 @@
 <template>
   <div class="column">
-    <div class="title h2-font"> Статус </div>
+    <div class="title h2-font"> {{status?.name}} </div>
     <div class="cards tasks-scrollbar">
-      <div class="card" v-for:="i of [1, 2, 3, 4, 5, 6, 7, 8 ,9, 10 , 11]" :key="i">
-        <TaskCard></TaskCard>
+      <div class="card" v-for:="task of filteredByStatusTasks" :key="task.id">
+        <TaskCard :short-task="task"></TaskCard>
       </div>
     </div>
   </div>
 </template>
 
-<script lang="ts">import { defineComponent } from 'vue';
+<script lang="ts">
+import { IIdPairName } from '@/interfaces/IIdPairName';
+import { ITaskShort } from '@/interfaces/ITaskShort';
+import { services } from '@/main';
+import { defineComponent, PropType } from 'vue';
 import TaskCard from './TaskCard.vue';
 
 export default defineComponent({
   name: "Column",
-  components: { TaskCard }
+  components: { TaskCard },
+  props:{
+    status: {
+      type: Object as PropType<IIdPairName>,
+    }
+  },
+  data(){
+    return {
+      services,
+      tasksCards: [] as ITaskShort[]
+    }
+  },
+  computed:{
+    filteredByStatusTasks(): ITaskShort[]{
+      if(!this.status){
+        return [];
+      }
+
+      const filtered = this.tasksCards.filter(task => task.statusId === this.status!.id);
+      filtered.sort((a, b) => {
+        if(a.priorityId > b.priorityId){
+          return 1;
+        } else if(a.priorityId < b.priorityId){
+          return -1;
+        }
+        
+        if(a.deadline.date > b.deadline.date){
+          return 1;
+        } else if(a.deadline.date < b.deadline.date){
+          return -1;
+        }
+
+        if(a.title > b.title){
+          return 1;
+        } else if (a.title < b.title){
+          return -1;
+        }
+
+        return 0;
+      });
+
+      return filtered;
+    }
+  },
+  mounted(){
+    this.services.resourceManager.taskFilter.filteredElements$.subscribe(tasks => {
+      this.tasksCards = tasks;
+    })
+  }
 })
 </script>
 

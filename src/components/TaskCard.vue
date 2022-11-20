@@ -4,28 +4,47 @@
       <div class="marker" :class="markerColor"></div>
     </div>
     <div class="left">
-      <div class="label h4-font">Lorem ipsum dolor sit amet consectetur.</div>
+      <div class="label h4-font">{{shortTask?.title}}.</div>
       <div class="date-row secondary-row">
         <img src="@/assets/calendar-icon.png">
-        <span>01.01.2020</span>
+        <span>{{shortTask?.deadline.dateStringOnly}}</span>
       </div>
       <div class="person-row secondary-row">
         <img src="@/assets/person-icon.png">
-        <span>Lorem, ipsum.</span>
+        <span>{{shortTask?.contractorSurname}} {{shortTask?.contractorName}}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { ITaskShort } from '@/interfaces/ITaskShort';
+import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
   name: "TaskCard",
   data() {
     return {
-      markerColor: "blue",
+      
     }
+  },
+  computed: {
+    markerColor(): string{
+      if (this.shortTask?.priorityId === "1"){
+        return "red";
+      } else if(this.shortTask?.priorityId === "2"){
+        return "yellow";
+      }
+
+      return "blue";
+    }
+  },
+  props:{
+    shortTask: {
+      type: Object as PropType<ITaskShort>
+    }
+  },
+  created(){
   }
 })
 </script>
@@ -98,7 +117,7 @@ export default defineComponent({
         background-color: $yellow;
       }
 
-      &.green {
+      &.red {
         background-color: $red;
       }
     }

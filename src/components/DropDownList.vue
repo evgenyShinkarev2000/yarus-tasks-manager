@@ -2,7 +2,8 @@
   <div class="host">
     <div class="label" @click="switchState">
       <div class="current-name drop-down-label-1-font" v-if:="selectedIndex < 0">{{ placeHolder }}</div>
-      <div class="current-name drop-down-item-1-font" v-if:="selectedIndex >= 0">{{ optionsVM[selectedIndex]?.option }}</div>
+      <div class="current-name drop-down-item-1-font" v-if:="selectedIndex >= 0">{{ optionsVM[selectedIndex]?.option }}
+      </div>
       <img src="@/assets/arrow-icon.png" :class="isDropped ? 'rotate' : ''">
     </div>
     <div class="options drop-down-item-1-font" v-show="isDropped" ref="options">
@@ -15,9 +16,11 @@
 </template>
     
 <script lang="ts">
-import { defineComponent, Prop, PropType } from 'vue';
+import { defineComponent, Prop, PropType, watch } from 'vue';
 import { services } from '@/main';
 import { IIdPairName } from '@/interfaces/IIdPairName';
+import { ReactiveFilter } from '@/view-models/ReactiveFilter';
+import { Subject, Subscriber } from 'rxjs';
 
 export default defineComponent({
   name: 'DropDownList',
@@ -26,22 +29,31 @@ export default defineComponent({
       type: String
     },
     options: {
-      type: Array as PropType<Array<IIdPairName>>
+      type: Array as PropType<Array<IIdPairName>>,
+      required: true
     },
     defaultIndex: {
       type: Number as PropType<number | undefined>
+    },
+    switchHandler: {
+      type: Function as PropType<(newValue: IIdPairName) => void>
     }
   },
-  beforeCreate(){
-    // console.log("optionVm");
+  beforeCreate() {
+    // console.log("optionVm");`
     // console.log(this.optionsVM);
     // console.log("option");
     // console.log(this.options);
     // console.log("selectedIndex");
     // console.log(this.selectedIndex);
   },
-  mounted(){
+  mounted() {
     this.selectedIndex = this.defaultIndex ?? -1;
+    this.switchSelected(this.selectedIndex);
+    watch(() => this.options, (oldVal, newVal) => {
+      this.switchSelected(this.selectedIndex);
+    });
+
     // console.log("optionVm");
     // console.log(this.optionsVM);
   },
@@ -58,6 +70,10 @@ export default defineComponent({
     },
     switchSelected(index: number): void {
       this.selectedIndex = index;
+      const currentOption = this.options[this.selectedIndex];
+      if (this.switchHandler && currentOption) {
+        this.switchHandler(currentOption);
+      }
     }
   },
   data() {

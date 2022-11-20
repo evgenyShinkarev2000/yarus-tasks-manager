@@ -4,7 +4,7 @@
     <div class="main">
       <div class="scroll-button left"></div>
       <div class="columns">
-        <Column v-for:="i of [0, 1, 2, 3, 4]"></Column>
+        <Column v-for:="i of taskStatuses" :status="i"></Column>
       </div>
       <div class="scroll-button right rotate-180"></div>
     </div>
@@ -14,13 +14,30 @@
 </template>
   
 <script lang="ts">
+import { IIdPairName } from '@/interfaces/IIdPairName';
+import { services } from '@/main';
 import { defineComponent } from 'vue';
 import Column from './Column.vue';
 import Controls from './Controls.vue';
 
 export default defineComponent({
   name: "TasksPage",
-  components: { Controls, Column }
+  components: { Controls, Column },
+  data(){
+    return {
+      taskStatuses: [] as IIdPairName[],
+      services
+    }
+  },
+  created(){
+    services.resourceManager.getStatuses().then((data: IIdPairName[]) => {
+      this.taskStatuses = data;
+      this.services.resourceManager.initTasks();
+    });
+  },
+  mounted() {
+    
+  },
 });
 </script>
   

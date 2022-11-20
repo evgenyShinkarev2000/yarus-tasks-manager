@@ -6,6 +6,8 @@ export interface ITaskShort{
   deadline: DateVM,
   contractorName: string,
   contractorSurname: string,
+  contractorId: string,
   statusId: string,
   priorityId: string,
+  projectId: string
 }
