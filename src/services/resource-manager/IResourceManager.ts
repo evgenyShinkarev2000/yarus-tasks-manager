@@ -9,5 +9,5 @@ export interface IResourceManager{
   getStatuses(): Promise<IIdPairName[]>,
   initTasks(): void,
   taskFilter: ReactiveFilter<ITaskShort>,
-  currentUserId: string
+  currentUser: IIdPairName 
 }

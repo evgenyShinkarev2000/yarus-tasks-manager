@@ -55,7 +55,7 @@ export class ResourceManager implements IResourceManager {
   ];
 
   public readonly taskFilter = new ReactiveFilter<ITaskShort>();
-  public readonly currentUserId: string = "1";
+  public readonly currentUser: IIdPairName = { id: "1", name: "Шинкарев Евгений" };
 
   public getProjects(): Promise<IIdPairName[]> {
     return this.helper([
@@ -81,9 +81,7 @@ export class ResourceManager implements IResourceManager {
   }
   public initTasks(): void {
     this.taskFilter.minFiltersCount = 2;
-    this.taskFilter.setElementsToFilter(new Observable(subscriber => {
-      subscriber.next(this._shortTasks);
-    }));
+    this.taskFilter.setElementsToFilter(this._shortTasks);
   }
 
   private helper<T>(data: T, delay: number = 1000): Promise<T> {

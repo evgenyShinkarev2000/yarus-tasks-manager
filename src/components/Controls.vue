@@ -2,7 +2,7 @@
   <section class="center-x">
     <div class="controls-container controls">
       <div class="left">
-        <DropDownList :options="projectOptions" :default-index="0" :switch-handler="projectSwitchHandler"></DropDownList>
+        <DropDownList :options="projectOptionsWithAll" :default-index="0" :switch-handler="projectSwitchHandler"></DropDownList>
         <DropDownList :options="taskContractorOptions" :default-index="0" :switch-handler="contractorSwitchHandler"></DropDownList>
       </div>
       <div class="right">
@@ -30,9 +30,15 @@ export default defineComponent({
         {id:"onlyCurrentUser", name:"Только мои"},
          {id:"allTasks", name:"Все задачи"}
         ] as IIdPairName[],
-      projectFilterSetter: services.resourceManager.taskFilter.getFilterSetter$(),
-      contractorFilterSetter: services.resourceManager.taskFilter.getFilterSetter$()
+      projectFilterSetter: services.resourceManager.taskFilter.getFilterSetter(),
+      contractorFilterSetter: services.resourceManager.taskFilter.getFilterSetter(),
+      allProjectOption: {id: "allProjectsOption", name: "Все проекты"} as IIdPairName
     };
+  },
+  computed: {
+    projectOptionsWithAll(): IIdPairName[]{
+      return [this.allProjectOption].concat(this.projectOptions);
+    }
   },
   components: { DropDownList },
   mounted(){
@@ -43,14 +49,18 @@ export default defineComponent({
   },
   methods: {
     projectSwitchHandler(val: IIdPairName): void{
-      this.projectFilterSetter.next((elementToValid: ITaskShort) => {
+      this.projectFilterSetter((elementToValid: ITaskShort) => {
+        if (val.id === "allProjectsOption"){
+          return true;
+        }
+
           return elementToValid.projectId === val.id;
       });
     },
     contractorSwitchHandler(val: IIdPairName): void{
-      this.contractorFilterSetter.next((elementToFilter: ITaskShort) => {
+      this.contractorFilterSetter((elementToFilter: ITaskShort) => {
         if (val.id === "onlyCurrentUser"){
-          return elementToFilter.contractorId === this.services.resourceManager.currentUserId;
+          return elementToFilter.contractorId === this.services.resourceManager.currentUser.id;
         }
 
         return true;

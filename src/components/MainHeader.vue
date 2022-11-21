@@ -11,7 +11,7 @@
       </div>
       <div class="right">
         <div class="user-name">
-          <span class="secondary1-font">Имя Пользователя</span>
+          <span class="secondary1-font">{{services.resourceManager.currentUser.name}}</span>
         </div>
         <div @click="exit()" class="exit">
           <span class="h3-font">Выход</span>
@@ -26,6 +26,11 @@ import { defineComponent } from 'vue';
 import { services } from '@/main';
 export default defineComponent({
   name: 'MainHeader',
+  data(){
+    return{
+      services,
+    }
+  },
   created() {
   },
   computed: {
