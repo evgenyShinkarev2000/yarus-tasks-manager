@@ -1,5 +1,5 @@
 <template>
-  <div class="host">
+  <div class="host" ref="head">
     <div class="label" @click="switchState">
       <div class="current-name drop-down-label-1-font" v-if:="selectedIndex < 0">{{ placeHolder }}</div>
       <div class="current-name drop-down-item-1-font" v-if:="selectedIndex >= 0">{{ optionsVM[selectedIndex]?.option }}
@@ -53,9 +53,12 @@ export default defineComponent({
     watch(() => this.options, (oldVal, newVal) => {
       this.switchSelected(this.selectedIndex);
     });
-
+    document.addEventListener("click", this.closeAtClickOutside);
     // console.log("optionVm");
     // console.log(this.optionsVM);
+  },
+  unmounted() {
+      document.removeEventListener("click", this.closeAtClickOutside);
   },
   computed: {
     optionsVM(): Array<{ option: string, key: string, isSelected: boolean }> {
@@ -74,7 +77,14 @@ export default defineComponent({
       if (this.switchHandler && currentOption) {
         this.switchHandler(currentOption);
       }
-    }
+    },
+    closeAtClickOutside(mouseEvent: MouseEvent): void{
+      const options = this.$refs.options as HTMLElement;
+      const head = this.$refs.head as HTMLElement;
+      if (!wasClickInside(options, mouseEvent) && !wasClickInside(head, mouseEvent)){
+        this.isDropped = false;
+      }
+    },
   },
   data() {
     return {
@@ -83,6 +93,14 @@ export default defineComponent({
     }
   },
 });
+
+function wasClickInside(element: HTMLElement, mouseEvent: MouseEvent): boolean{
+  const position = element.getBoundingClientRect();
+  return position.left <= mouseEvent.clientX
+    && position.right >= mouseEvent.clientX
+    && position.top <= mouseEvent.clientY
+    && position.bottom >= mouseEvent.clientY;
+}
 </script>
     
     <!-- Add "scoped" attribute to limit CSS to this component only -->
