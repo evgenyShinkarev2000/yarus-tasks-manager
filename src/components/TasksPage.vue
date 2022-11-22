@@ -2,11 +2,15 @@
   <div class="wrapper">
     <Controls></Controls>
     <div class="main">
-      <div class="scroll-button left"></div>
+      <div class="scroll-button left">
+        <img src="@/assets/arrow-icon.png">
+      </div>
       <div class="columns">
         <Column v-for:="i of taskStatuses" :status="i"></Column>
       </div>
-      <div class="scroll-button right rotate-180"></div>
+      <div class="scroll-button right">
+        <img class="rotate-180" src="@/assets/arrow-icon.png">
+      </div>
     </div>
   </div>
 
@@ -84,15 +88,16 @@ $prevent-shadow-cut: 10;
 .scroll-button {
   width: calc(44 * var(--swpx));
   border-radius: 13px;
-  background-color: rgba($white, 0.4);
   box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.25);
-  background-image: url("@/assets/arrow-icon.png");
-  background-size: calc(22 * var(--swpx));
-  background-repeat: no-repeat;
-  background-position: center center;
   box-sizing: border-box;
   margin-top: calc(10 * var(--shpx));
   margin-bottom: calc(30 * var(--shpx));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  img{
+    width: calc(22 * var(--swpx));
+  }
 }
 
 .mock-img {
@@ -101,6 +106,6 @@ $prevent-shadow-cut: 10;
 
 .rotate-180 {
   transform: rotate(180deg);
-}
+} 
 </style>
   

@@ -4,10 +4,30 @@ $light-blue: #61B3E7;
 $grey-blue: #9CC9E2;
 $black: #262626;
 $light-grey: #EEE;
+$grey-0-9: #F1F1F1;
 $grey-1: #E0E0E0;
 $grey-1-1: #D4D4D4;
 $grey-1-2: #BFBEBE;
 $grey-2: #9A9A9A;
 $dark-grey: #676767;
 $yellow: #F5BC29;
-$red: #EF7564
+$red: #EF7564;
+$modal-window-background: rgba(0, 0, 0, 0.5);
+
+.marker {
+  width: calc(32 * var(--swpx));
+  height: calc(14 * var(--shpx));
+  border-radius: 7.5px;
+
+  &.blue {
+    background-color: $light-blue;
+  }
+
+  &.yellow {
+    background-color: $yellow;
+  }
+
+  &.red {
+    background-color: $red;
+  }
+}

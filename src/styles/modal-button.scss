@@ -1,0 +1,14 @@
+.modal-button {
+  width: calc(248 * var(--swpx));
+  height: calc(48 * var(--shpx));
+  border-radius: calc(15 * var(--swpx));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 600;
+  font-size: calc(18 * var(--swpx));
+  line-height: calc(22 * var(--swpx));
+  color: #FFFFFF;
+}

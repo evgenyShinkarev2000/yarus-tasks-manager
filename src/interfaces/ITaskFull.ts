@@ -9,5 +9,8 @@ export interface ITaskFull extends ITaskShort{
   actualTime: Date,
   accepted: boolean,
   compleatedAt: Date,
-  checkList: ICheckedListItem[]
+  checkList: ICheckedListItem[],
+  projectName: string,
+  priorityName: string,
+  statusName: string,
 }

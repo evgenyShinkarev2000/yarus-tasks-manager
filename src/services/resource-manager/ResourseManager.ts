@@ -3,7 +3,7 @@ import { ITaskFull } from "@/interfaces/ITaskFull";
 import { ITaskShort } from "@/interfaces/ITaskShort";
 import { DateVM } from "@/view-models/DateVM";
 import { ReactiveFilter } from "@/view-models/ReactiveFilter";
-import { Observable, Subject, Subscriber } from "rxjs";
+import { BehaviorSubject, Observable, ReplaySubject, Subject, Subscriber } from "rxjs";
 import { IResourceManager } from "./IResourceManager";
 
 export class ResourceManager implements IResourceManager {
@@ -53,35 +53,71 @@ export class ResourceManager implements IResourceManager {
       deadline: new DateVM(), contractorName: "Игорь", contractorSurname: "Меркушев"
     },
   ];
+  private readonly _priorities: IIdPairName[] = [
+    { id: "1", name: "Высокий приоритет" },
+    { id: "2", name: "Средний приоритет" },
+    { id: "3", name: "Низкий приоритет" }
+  ]
+  private readonly _projects: IIdPairName[] = [
+    { id: "1", name: "Урфу" },
+    { id: "2", name: "Ярус" }
+  ];
+  private readonly _statuses: IIdPairName[] = [
+    { id: "1", name: "Создано" },
+    { id: "2", name: "Принята в работу" },
+    { id: "3", name: "Выполняется" },
+    { id: "4", name: "Проверяется" },
+    { id: "5", name: "Завершено" }
+  ];
 
   public readonly taskFilter = new ReactiveFilter<ITaskShort>();
   public readonly currentUser: IIdPairName = { id: "1", name: "Шинкарев Евгений" };
 
   public getProjects(): Promise<IIdPairName[]> {
-    return this.helper([
-      { id: "1", name: "Урфу" },
-      { id: "2", name: "Ярус" }
-    ]);
+    return this.helper(this._projects);
   }
   public getPriorities(): Promise<IIdPairName[]> {
-    return this.helper([
-      { id: "1", name: "Низкий приоритет" },
-      { id: "2", name: "Средний приоритет" },
-      { id: "3", name: "Высокий приоритет" }
-    ]);
+    return this.helper(this._priorities);
   }
   public getStatuses(): Promise<IIdPairName[]> {
-    return this.helper([
-      { id: "1", name: "Создано" },
-      { id: "2", name: "Принята в работу" },
-      { id: "3", name: "Выполняется" },
-      { id: "4", name: "Проверяется" },
-      { id: "5", name: "Завершено" }
-    ]);
+    return this.helper(this._statuses);
   }
   public initTasks(): void {
     this.taskFilter.minFiltersCount = 2;
     this.taskFilter.setElementsToFilter(this._shortTasks);
+  }
+
+  public getFullTaskById(id: string): ReplaySubject<ITaskFull> {
+    const fullTask$ = new ReplaySubject<ITaskFull>(1);
+    const fullTask = this._shortTasks.find(t => t.id === id) as unknown as ITaskFull;
+    if (!fullTask){
+      throw new Error();
+    }
+    const projectName = this._projects.find(p => p.id === fullTask.projectId)?.name;
+    if (!projectName){
+      throw new Error();
+    }
+    fullTask.projectName = projectName;
+    const priorityName = this._priorities.find(p => p.id === fullTask.priorityId)?.name;
+    if (!priorityName){
+      throw new Error();
+    }
+    fullTask.priorityName = priorityName;
+    const statusName = this._statuses.find(s => s.id === fullTask.statusId)?.name;
+    if (!statusName){
+      throw new Error();
+    }
+    fullTask.statusName = statusName;
+    fullTask.checkList = [
+      {id:"1", isClosed:true, name:"этап 1"},
+      {id:"2", isClosed:false, name:"этап 2"},
+      {id:"3", isClosed: false, name: "этап 3"}
+    ];
+    setTimeout(() => {
+      fullTask$.next(fullTask);
+    }, 1500);
+    
+    return fullTask$;
   }
 
   private helper<T>(data: T, delay: number = 1000): Promise<T> {
