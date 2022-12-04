@@ -35,9 +35,9 @@
       <textarea class="text-input description general-font"
         placeholder="Здесь можно ввести краткое описание задачи" :value="task?.description"></textarea>
     </div>
-    <div class="flex-inline">
+    <div class="flex-inline space">
       <h4 class="h4-font">Срок выполнения</h4>
-      <Calendar :selected-date$="deadLine$" :is-shorted="true"></Calendar>
+      <Calendar :selected-date$="deadLine$" :is-shorted-prop="true"></Calendar>
     </div>
     <div class="flex-block small-gap-block">
       <h4 class="h4-font">Этапы</h4>

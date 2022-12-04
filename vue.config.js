@@ -7,6 +7,7 @@ module.exports = {
             @import "@/styles/fonts.scss";
             @import "@/styles/structs.scss";
             @import "@/styles/scrollbar.scss";
+            @import 'v-calendar/dist/style.css';
             `
         }
       }

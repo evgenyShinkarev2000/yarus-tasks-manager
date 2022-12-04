@@ -1,9 +1,11 @@
 <template>
-  <div class="short-calendar" v-if="isShorted">
+  <div class="short-calendar" v-if="isShorted" @click="isShorted = !isShorted">
     <img class="calendar-icon" src="@/assets/calendar-icon.png">
-    <p class="date">{{formatedDate}}</p>
+    <p class="date">{{ formatedDate }}</p>
   </div>
-  <div class="full-calendar" v-else></div>
+  <div class="full-calendar" v-else>
+    <v-calendar :attributes="attributes" @dayclick="setDate"/>
+  </div>
 </template>
 
 <script lang="ts">import { BehaviorSubject } from 'rxjs';
@@ -15,7 +17,7 @@ export default defineComponent({
   {
   },
   props: {
-    isShorted: {
+    isShortedProp: {
       default: true,
       type: Boolean
     },
@@ -25,10 +27,28 @@ export default defineComponent({
     }
   },
   computed: {
-    formatedDate(): string{
+    formatedDate(): string
+    {
       const date = this.selectedDate$?.value;
 
       return `${date?.getDate()}.${date?.getMonth()}.${date?.getFullYear()}`;
+    },
+    attributes(): any[]
+    {
+      const nowDateAttribute = { dates: new Date(), highlight: true, id: 1 };
+      const deadLine = { dates: this.selectedDate$.value, highlight: "red", id: 2 };
+      return [nowDateAttribute, deadLine];
+    }
+  },
+  data()
+  {
+    return {
+      isShorted: this.isShortedProp,
+    }
+  },
+  methods: {
+    setDate(date: any){
+      this.selectedDate$.next(date.date);
     }
   }
 })
