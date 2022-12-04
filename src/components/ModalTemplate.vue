@@ -18,6 +18,9 @@ export default defineComponent({
   methods:{
     clickHandler(clickElent: MouseEvent): void{
       const card = this.$refs.cardRef as HTMLElement;
+      if(!card){
+        return;
+      }
       if(clickElent.clientX < card.offsetLeft
       || clickElent.clientX > card.offsetLeft + card.offsetWidth
       || clickElent.clientY < card.offsetTop

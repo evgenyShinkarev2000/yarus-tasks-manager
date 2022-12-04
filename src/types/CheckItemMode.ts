@@ -1,0 +1,1 @@
+export type CheckItemMode = "lock" | "edit" | "check";

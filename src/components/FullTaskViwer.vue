@@ -1,5 +1,6 @@
 <template>
-  <div class="rows" v-if="isLoaded">
+  <TaskForm v-if="isOpenEdit" :task="task" :appearance="'existed'"></TaskForm>
+  <div class="rows" v-if="isLoaded && !isOpenEdit">
     <div class="flex-line">
       <span class="h3-font" v-if="task.title">{{ task.title }}</span>
       <span class="secondary-font undefined-color" v-else>Не указан</span>
@@ -45,26 +46,30 @@
       <span class="item-font" v-if="task.deadline">{{ task.deadline.dateStringOnly }}</span>
       <span class="secondary-font undefined-color" v-else>Не указан</span>
     </div>
-    <div class="flex-block" @click.prevent="">
+    <div class="flex-block">
       <span class="title-font">Этапы</span>
       <div class="flex-block small-gap" v-if="task.checkList && task.checkList.length > 0">
-        <CheckListItem v-for="i of task.checkList" :key="i.id" :check-list-item="i"></CheckListItem>
+        <CheckList :items$="checkListItems$" :mode="'lock'"></CheckList>
       </div>
       <span class="secondary-font undefined-color" v-else>Нет Этапов</span>
     </div>
     <div class="buttons">
-      <button class="button edit">Редактировать</button>
+      <button class="button edit" @click="openEdit">Редактировать</button>
       <button class="button close" @click="closeClick">Закрыть</button>
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import { ICheckedListItem } from '@/interfaces/ICheckedListItem';
 import { ITaskFull } from '@/interfaces/ITaskFull';
 import { services } from '@/main';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { defineComponent } from 'vue';
-import CheckListItem from './CheckListItem.vue';
+import Calendar from './Calendar.vue';
+import CheckList from './CheckList.vue';
+import CheckListItemView from './CheckListItem.vue';
+import TaskForm from './TaskForm.vue';
 
 export default defineComponent({
   name: "FullTaskViewer",
@@ -95,21 +100,31 @@ export default defineComponent({
         return "yellow";
       }
       return "blue";
+    },
+    checkListItems$(): BehaviorSubject<ICheckedListItem[]>{
+      const stream$ = new BehaviorSubject<ICheckedListItem[]>(this.task.checkList);
+      stream$.complete();
+
+      return stream$;
     }
   },
   data() {
     return {
       isLoaded: false,
       task: {} as ITaskFull,
-      subsciptions: [] as Subscription[]
+      subsciptions: [] as Subscription[],
+      isOpenEdit: false,
     };
   },
   methods:{
     closeClick(): void{
       services.modalWindow.closeSignal$.next();
+    },
+    openEdit(): void{
+      this.isOpenEdit = true;
     }
   },
-  components: { CheckListItem }
+  components: { CheckListItemView, TaskForm, CheckList, Calendar }
 })
 </script>
 

@@ -1,12 +1,14 @@
 import { IIdPairName } from "@/interfaces/IIdPairName";
 import { ITaskFull } from "@/interfaces/ITaskFull";
 import { ITaskShort } from "@/interfaces/ITaskShort";
+import { IUser, IUserMock } from "@/interfaces/IUser";
 import { DateVM } from "@/view-models/DateVM";
 import { ReactiveFilter } from "@/view-models/ReactiveFilter";
-import { BehaviorSubject, Observable, ReplaySubject, Subject, Subscriber } from "rxjs";
+import { BehaviorSubject, map, Observable, ReplaySubject, Subject, Subscriber } from "rxjs";
 import { IResourceManager } from "./IResourceManager";
 
-export class ResourceManager implements IResourceManager {
+export class ResourceManager implements IResourceManager
+{
   private readonly _shortTasks: ITaskShort[] = [
     {
       id: "1", title: "Начать учиться", priorityId: "1", statusId: "1", projectId: "2", contractorId: "1",
@@ -52,6 +54,15 @@ export class ResourceManager implements IResourceManager {
       id: "11", title: "Заменить Promise на Observable", priorityId: "1", statusId: "5", projectId: "1", contractorId: "2",
       deadline: new DateVM(), contractorName: "Игорь", contractorSurname: "Меркушев"
     },
+    {
+      id: "12", title: "Включить уведомления в телеграме", priorityId: "2", statusId: "1", projectId: "2", contractorId: "3",
+      deadline: new DateVM(), contractorName: "Виктор", contractorSurname: "Ермолаев"
+    },
+    {
+      id: "13", title: "Проснуться", priorityId: "3", statusId: "2", projectId: "1", contractorId: "4",
+      deadline: new DateVM(), contractorName: "Джон", contractorSurname: "Сина"
+    },
+
   ];
   private readonly _priorities: IIdPairName[] = [
     { id: "1", name: "Высокий приоритет" },
@@ -69,63 +80,122 @@ export class ResourceManager implements IResourceManager {
     { id: "4", name: "Проверяется" },
     { id: "5", name: "Завершено" }
   ];
+  private readonly _users: IUserMock[] = [
+    { id: "3", name: "Виктор", surname: "Ермолаев", projectId: "2" },
+    { id: "1", name: "Евгений", surname: "Шинкарев", projectId: "2" },
+    { id: "2", name: "Игорь", surname: "Меркушев", projectId: "1" },
+    { id: "4", name: "Джон", surname: "Сина", projectId: "1" },
+  ]
 
   public readonly taskFilter = new ReactiveFilter<ITaskShort>();
-  public readonly currentUser: IIdPairName = { id: "1", name: "Шинкарев Евгений" };
+  public readonly currentUser: IUser = { id: "1", name: "Евгений", surname: "Шинкарев" };
 
-  public getProjects(): Promise<IIdPairName[]> {
+  public getProjects(): Promise<IIdPairName[]>
+  {
     return this.helper(this._projects);
   }
-  public getPriorities(): Promise<IIdPairName[]> {
+  public get projects$(): Observable<IIdPairName[]>
+  {
+    const stream$ = new ReplaySubject<IIdPairName[]>(1);
+    stream$.next(this._projects);
+
+    return stream$;
+  }
+
+  public getContractorsByProjects$(ids: string[]): Observable<IUser[]>
+  {
+    const stream$ = new ReplaySubject<IUser[]>(1);
+    const result: IUser[] = [];
+    ids.forEach(id =>
+    {
+      const project = this._projects.find(p => p.id === id);
+      if (!project)
+      {
+        throw new Error("Откуда взялся id?");
+      }
+      const users: IUser[] = this._users.filter(u => u.projectId === id);
+      result.push(...users);
+    });
+    stream$.next(result);
+
+    return stream$;
+  }
+
+  public getContractorsByProject$(projectId: string): Observable<IUser[]>
+  {
+    return this.getContractorsByProjects$([projectId]);
+  }
+
+  public getPriorities(): Promise<IIdPairName[]>
+  {
     return this.helper(this._priorities);
   }
-  public getStatuses(): Promise<IIdPairName[]> {
+
+  public get priorities$(): Observable<IIdPairName[]>
+  {
+    return new BehaviorSubject<IIdPairName[]>(this._priorities);
+  }
+
+  public getStatuses(): Promise<IIdPairName[]>
+  {
     return this.helper(this._statuses);
   }
-  public initTasks(): void {
+
+  public initTasks(): void
+  {
     this.taskFilter.minFiltersCount = 2;
     this.taskFilter.setElementsToFilter(this._shortTasks);
   }
 
-  public getFullTaskById(id: string): ReplaySubject<ITaskFull> {
+  public getFullTaskById(id: string): ReplaySubject<ITaskFull>
+  {
     const fullTask$ = new ReplaySubject<ITaskFull>(1);
     const fullTask = this._shortTasks.find(t => t.id === id) as unknown as ITaskFull;
-    if (!fullTask){
+    if (!fullTask)
+    {
       throw new Error();
     }
     const projectName = this._projects.find(p => p.id === fullTask.projectId)?.name;
-    if (!projectName){
+    if (!projectName)
+    {
       throw new Error();
     }
     fullTask.projectName = projectName;
     const priorityName = this._priorities.find(p => p.id === fullTask.priorityId)?.name;
-    if (!priorityName){
+    if (!priorityName)
+    {
       throw new Error();
     }
     fullTask.priorityName = priorityName;
     const statusName = this._statuses.find(s => s.id === fullTask.statusId)?.name;
-    if (!statusName){
+    if (!statusName)
+    {
       throw new Error();
     }
     fullTask.statusName = statusName;
     fullTask.checkList = [
-      {id:"1", isClosed:true, name:"этап 1"},
-      {id:"2", isClosed:false, name:"этап 2"},
-      {id:"3", isClosed: false, name: "этап 3"}
+      { id: "1", isClosed: true, name: "этап 1" },
+      { id: "2", isClosed: false, name: "этап 2" },
+      { id: "3", isClosed: false, name: "этап 3" }
     ];
-    setTimeout(() => {
+    fullTask.deadline = fullTask.deadline ?? new DateVM();
+    setTimeout(() =>
+    {
       fullTask$.next(fullTask);
     }, 1500);
-    
+
     return fullTask$;
   }
 
-  private helper<T>(data: T, delay: number = 1000): Promise<T> {
+  private helper<T>(data: T, delay: number = 1000): Promise<T>
+  {
     let resolve: (data: T) => void;
-    const promise: Promise<T> = new Promise((res, rej) => {
+    const promise: Promise<T> = new Promise((res, rej) =>
+    {
       resolve = res;
     });
-    setTimeout(() => {
+    setTimeout(() =>
+    {
       resolve(data);
     }, delay);
 

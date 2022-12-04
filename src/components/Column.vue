@@ -85,6 +85,7 @@ export default defineComponent({
     padding-top: calc(12 * var(--shpx));
     height: calc(36 * var(--shpx));
     margin-bottom: calc(10 * var(--shpx)); // либо тень образается, либо статус
+    text-align: center;
   }
 
   .cards {
