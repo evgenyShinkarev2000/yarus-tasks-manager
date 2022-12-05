@@ -58,6 +58,7 @@ export default defineComponent({
       justify-content: stretch;
       align-items: stretch;
       overflow-y: auto;
+      overflow-x: hidden;
       box-sizing: border-box;
     }
   

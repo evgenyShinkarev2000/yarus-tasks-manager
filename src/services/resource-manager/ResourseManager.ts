@@ -1,4 +1,5 @@
 import { IIdPairName } from "@/interfaces/IIdPairName";
+import { IServerAnswer } from "@/interfaces/IServeAnswer";
 import { ITaskFull } from "@/interfaces/ITaskFull";
 import { ITaskShort } from "@/interfaces/ITaskShort";
 import { IUser, IUserMock } from "@/interfaces/IUser";
@@ -62,8 +63,9 @@ export class ResourceManager implements IResourceManager
       id: "13", title: "Проснуться", priorityId: "3", statusId: "2", projectId: "1", contractorId: "4",
       deadline: new DateVM(), contractorName: "Джон", contractorSurname: "Сина"
     },
-
   ];
+
+  private readonly _fullTasks: ITaskFull[] = [];
   private readonly _priorities: IIdPairName[] = [
     { id: "1", name: "Высокий приоритет" },
     { id: "2", name: "Средний приоритет" },
@@ -86,6 +88,8 @@ export class ResourceManager implements IResourceManager
     { id: "2", name: "Игорь", surname: "Меркушев", projectId: "1" },
     { id: "4", name: "Джон", surname: "Сина", projectId: "1" },
   ]
+
+  private _idNumber: number = 0;
 
   public readonly taskFilter = new ReactiveFilter<ITaskShort>();
   public readonly currentUser: IUser = { id: "1", name: "Евгений", surname: "Шинкарев" };
@@ -150,24 +154,31 @@ export class ResourceManager implements IResourceManager
   public getFullTaskById(id: string): ReplaySubject<ITaskFull>
   {
     const fullTask$ = new ReplaySubject<ITaskFull>(1);
-    const fullTask = this._shortTasks.find(t => t.id === id) as unknown as ITaskFull;
+    let fullTask = this._fullTasks.find(t => t.id === id);
+    if (fullTask){
+      fullTask$.next(fullTask);
+      
+      return fullTask$;
+    }
+    
+    fullTask = this._shortTasks.find(t => t.id === id) as unknown as ITaskFull;
     if (!fullTask)
     {
       throw new Error();
     }
-    const projectName = this._projects.find(p => p.id === fullTask.projectId)?.name;
+    const projectName = this._projects.find(p => p.id === fullTask!.projectId)?.name;
     if (!projectName)
     {
       throw new Error();
     }
     fullTask.projectName = projectName;
-    const priorityName = this._priorities.find(p => p.id === fullTask.priorityId)?.name;
+    const priorityName = this._priorities.find(p => p.id === fullTask!.priorityId)?.name;
     if (!priorityName)
     {
       throw new Error();
     }
     fullTask.priorityName = priorityName;
-    const statusName = this._statuses.find(s => s.id === fullTask.statusId)?.name;
+    const statusName = this._statuses.find(s => s.id === fullTask!.statusId)?.name;
     if (!statusName)
     {
       throw new Error();
@@ -181,10 +192,50 @@ export class ResourceManager implements IResourceManager
     fullTask.deadline = fullTask.deadline ?? new DateVM();
     setTimeout(() =>
     {
-      fullTask$.next(fullTask);
+      fullTask$.next(fullTask!);
     }, 1500);
 
     return fullTask$;
+  }
+
+  public putTask(fullTask: ITaskFull): Observable<IServerAnswer<ITaskFull>>
+  {
+    let index = this._fullTasks.findIndex(t => t.id === fullTask.id);
+    if (index >= 0){
+      this._fullTasks[index] = fullTask;
+    }
+    else{
+      this._fullTasks.push(fullTask);
+    }
+    index = this._shortTasks.findIndex(t => t.id === fullTask.id);
+    if (index >= 0){
+      this._shortTasks[index] = fullTask;
+    }
+    else{
+      throw new Error();
+    }
+
+    this.taskFilter.setElementsToFilter(this._shortTasks);
+
+    const stream$ = new BehaviorSubject<IServerAnswer<ITaskFull>>({isOk: true, item: fullTask});
+    stream$.complete();
+
+    return stream$;
+  }
+
+  addTask(fullTask: ITaskFull): Observable<IServerAnswer<ITaskFull>>
+  {
+    fullTask.statusId = "1";
+    fullTask.statusName = "Создано";
+    fullTask.id = "from serve answer " + this._idNumber;
+    this._idNumber += 1;
+    this._fullTasks.push(fullTask);
+    this._shortTasks.push(fullTask);
+    this.taskFilter.setElementsToFilter(this._shortTasks);
+    const stream$ = new BehaviorSubject<IServerAnswer<ITaskFull>>({isOk: true, item: fullTask});
+    stream$.complete();
+
+    return stream$;
   }
 
   private helper<T>(data: T, delay: number = 1000): Promise<T>

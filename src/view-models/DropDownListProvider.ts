@@ -29,6 +29,10 @@ export class DropDownListProvider<T>{
     return this._selected$;
   }
 
+  public get selected(): Readonly<IDropDownListItem<T> | null>{
+    return this._selected$.value;
+  }
+
   public constructor(idNameSelector: (element: T) => IIdPairName, elements: T[] = [], selectedIndex: number = 0)
   {
     this._idNameSelector = idNameSelector;

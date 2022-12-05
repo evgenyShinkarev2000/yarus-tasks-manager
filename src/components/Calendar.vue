@@ -3,7 +3,7 @@
     <img class="calendar-icon" src="@/assets/calendar-icon.png">
     <p class="date">{{ formatedDate }}</p>
   </div>
-  <div class="full-calendar" v-else>
+  <div class="full-calendar" v-else ref="fullCalendar">
     <v-calendar :attributes="attributes" @dayclick="setDate"/>
   </div>
 </template>
@@ -15,6 +15,10 @@ export default defineComponent({
   name: "Calendar",
   created()
   {
+    document.addEventListener("click", this.collapseAtClickOutside)
+  },
+  unmounted(){
+    document.removeEventListener("click", this.collapseAtClickOutside);
   },
   props: {
     isShortedProp: {
@@ -49,9 +53,26 @@ export default defineComponent({
   methods: {
     setDate(date: any){
       this.selectedDate$.next(date.date);
+    },
+    collapseAtClickOutside(mouseEvent: MouseEvent): void{
+      if (this.isShorted){
+        return;
+      }
+      const fullCalendar = this.$refs.fullCalendar as HTMLElement;
+      if (!wasClickInside(fullCalendar, mouseEvent)){
+        this.isShorted = true;
+      }
     }
   }
 })
+
+function wasClickInside(element: HTMLElement, mouseEvent: MouseEvent): boolean {
+  const position = element.getBoundingClientRect();
+  return position.left <= mouseEvent.clientX
+    && position.right >= mouseEvent.clientX
+    && position.top <= mouseEvent.clientY
+    && position.bottom >= mouseEvent.clientY;
+}
 </script>
 
 <style lang="scss" scoped>

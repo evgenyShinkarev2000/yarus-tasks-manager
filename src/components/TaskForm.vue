@@ -4,7 +4,7 @@
       <h3 class="h3-font">{{ appearance === "new" ? "Создание задачи" : "Редактирование задачи" }}</h3>
     </div>
     <div class="flex-inline">
-      <input class="text-input name general-font" type="text" placeholder="Введите название задачи" :value="task?.title">
+      <input class="text-input name general-font" type="text" placeholder="Введите название задачи" v-model="taskCopy.title">
     </div>
     <div class="flex-inline space">
       <h4 class="h4-font">Проект</h4>
@@ -33,7 +33,7 @@
     <div class="flex-block">
       <h4 class="h4-font">Дополнительно</h4>
       <textarea class="text-input description general-font"
-        placeholder="Здесь можно ввести краткое описание задачи" :value="task?.description"></textarea>
+        placeholder="Здесь можно ввести краткое описание задачи" v-model="taskCopy.description"></textarea>
     </div>
     <div class="flex-inline space">
       <h4 class="h4-font">Срок выполнения</h4>
@@ -44,8 +44,8 @@
       <CheckList :items$="checkListItems$" :mode="'edit'"></CheckList>
     </div>
     <div class="flex-inline">
-      <button class="modal-button confirm" @click="confirmClick">Подтвердить</button>
-      <button class="modal-button cancel" @click="cancelClick">Отмена</button>
+      <button class="modal-button confirm" @click="confirmClick" :key="1">Подтвердить</button>
+      <button class="modal-button cancel" @click="cancelClick" :key="2">Отмена</button>
     </div>
   </div>
 </template>
@@ -65,6 +65,8 @@ import MarkerTextOption from './DropDownListV2/MarkerTextOption.vue';
 import CheckList from './CheckList.vue';
 import { ICheckedListItem } from '@/interfaces/ICheckedListItem';
 import Calendar from './Calendar.vue';
+import { TaskVM } from '@/view-models/TaskVM';
+import {DateVM} from '@/view-models/DateVM';
 
 export default defineComponent({
   name: "TaskForm",
@@ -74,8 +76,8 @@ export default defineComponent({
       services.resourceManager.projects$.subscribe(projects =>
       {
         this.projectsProvider.setItems(projects);
-        const projectTask = this.projectsProvider.findItemById(this.task?.projectId);
-        if (!projectTask && this.task?.projectId)
+        const projectTask = this.projectsProvider.findItemById(this.taskCopy?.projectId);
+        if (!projectTask && this.taskCopy?.projectId)
         {
           throw new Error("В задаче id проекта к которому нет доступа");
         }
@@ -95,9 +97,9 @@ export default defineComponent({
           ).subscribe(contractors =>
           {
             this.contractorsProvider.setItems(contractors);
-            const contractorTask = this.contractorsProvider.findItemById(this.task?.contractorId) 
+            const contractorTask = this.contractorsProvider.findItemById(this.taskCopy?.contractorId) 
               ?? this.contractorsProvider.findItemById(services.resourceManager.currentUser.id);
-            if (!contractorTask && this.task?.contractorId)
+            if (!contractorTask && this.taskCopy?.contractorId)
             {
               throw new Error("В задаче id исполнителя, которого не существует");
             }
@@ -110,8 +112,8 @@ export default defineComponent({
       services.resourceManager.priorities$.subscribe(priorities =>
       {
         this.prioritiesProvider.setItems(priorities);
-        const priorityTask = this.prioritiesProvider.findItemById(this.task?.priorityId);
-        if (!priorityTask && this.task?.priorityId)
+        const priorityTask = this.prioritiesProvider.findItemById(this.taskCopy?.priorityId);
+        if (!priorityTask && this.taskCopy?.priorityId)
         {
           throw new Error("Неизвестный приоритет задачи");
         }
@@ -136,15 +138,17 @@ export default defineComponent({
   },
   data()
   {
+    const taskCopy = new TaskVM(this.task!).getCopy();
     return {
+      taskCopy,
       projectsProvider: new DropDownListProvider<IIdPairName>(idPairName => idPairName),
       contractorsProvider: new DropDownListProvider((user: IUser) =>
       {
         return { id: user.id, name: `${user.surname} ${user.name}` };
       }),
       prioritiesProvider: new DropDownListProvider<IIdPairName>(idPairName => idPairName),
-      checkListItems$: new BehaviorSubject<ICheckedListItem[]>(this.task?.checkList ?? []),
-      deadLine$: new BehaviorSubject<Date | undefined>(this.task?.deadline.date),
+      checkListItems$: new BehaviorSubject<ICheckedListItem[]>(taskCopy?.checkList ?? []),
+      deadLine$: new BehaviorSubject<Date | undefined>(taskCopy?.deadline.date),
       streams: [] as Subject<any>[],
       subscriptions: [] as Subscription[],
     }
@@ -152,13 +156,31 @@ export default defineComponent({
   methods: {
     confirmClick(): void
     {
+      debugger;
+      this.taskCopy.checkList = this.checkListItems$.value;
+      this.taskCopy.deadline = new DateVM(this.deadLine$.value);
+      this.taskCopy.projectId = this.projectsProvider.selected!.item.id;
+      this.taskCopy.projectName = this.projectsProvider.selected!.item.name;
+      this.taskCopy.priorityId = this.prioritiesProvider.selected!.item.id;
+      this.taskCopy.priorityName = this.prioritiesProvider.selected!.item.name;
+      this.taskCopy.contractorId = this.contractorsProvider.selected!.item.id;
+      this.taskCopy.contractorName = this.contractorsProvider.selected!.item.name;
+      this.taskCopy.contractorSurname = this.contractorsProvider.selected!.item.surname;
 
+      if (this.appearance === 'new'){
+        services.resourceManager.addTask(this.taskCopy);
+      }
+      else if (this.appearance === 'existed'){
+        services.resourceManager.putTask(this.taskCopy);
+      }
     },
     cancelClick(): void
     {
+      debugger;
       services.modalWindow.closeSignal$.next();
     }
   },
+
   components: { DropDownListV2, OnlyTextOption, MarkerTextOption, CheckList, Calendar }
 });
 </script>
