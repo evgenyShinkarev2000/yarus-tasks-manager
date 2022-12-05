@@ -18,7 +18,20 @@ $modal-window-background: rgba(0, 0, 0, 0.5);
   width: calc(32 * var(--swpx));
   height: calc(14 * var(--shpx));
   border-radius: 7.5px;
+  &.blue {
+    background-color: $light-blue;
+  }
 
+  &.yellow {
+    background-color: $yellow;
+  }
+
+  &.red {
+    background-color: $red;
+  }
+
+}
+.marker-line{
   &.blue {
     background-color: $light-blue;
   }

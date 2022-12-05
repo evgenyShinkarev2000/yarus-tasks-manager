@@ -9,5 +9,6 @@ export interface ITaskShort{
   contractorId: string,
   statusId: string,
   priorityId: string,
-  projectId: string
+  projectId: string,
+  projectName?: string,
 }

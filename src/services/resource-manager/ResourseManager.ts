@@ -148,7 +148,11 @@ export class ResourceManager implements IResourceManager
   public initTasks(): void
   {
     this.taskFilter.minFiltersCount = 2;
-    this.taskFilter.setElementsToFilter(this._shortTasks);
+    const tasksWithProjectName = this._shortTasks.map(t => {
+        t.projectName = this._projects.find(p => p.id === t.projectId)?.name;
+        return t;
+    });
+    this.taskFilter.setElementsToFilter(tasksWithProjectName);
   }
 
   public getFullTaskById(id: string): ReplaySubject<ITaskFull>
