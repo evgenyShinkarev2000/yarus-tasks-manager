@@ -1,20 +1,22 @@
-import { createApp, InjectionKey } from 'vue'
-import App from './App.vue'
-import router from './router'
-import { Services } from './services';
-import { ILocalStorageService } from './services/local-storage/ILocalStorageService';
-import { LocalStorageService } from './services/local-storage/LocalStorageService';
-import { IPermissionService } from './services/permission/IPermissionService'
-import { PermissionService } from './services/permission/PermissionService';
 import VCalendar from 'v-calendar';
+import { createApp } from 'vue';
+import VueAxios from 'vue-axios';
+import App from './App.vue';
+import router from './router';
+import { IServices } from './services/IServices';
+import { RemoveServices } from './services/RemoteServices';
+import { Services } from './services/services';
+
+const isRemoteMode = true;
+export const services: IServices = isRemoteMode ? new RemoveServices() : new Services();
+const app = createApp(App);
+app.use(VCalendar, {}).use(router);
+if (isRemoteMode)
+{
+  app.use(VueAxios, (services as RemoveServices).serverApi.getConfiguredAxios());
+}
+app.mount("#app");
 
 
-export const PERMISSION_SERVICE_TOKEN = Symbol() as InjectionKey<IPermissionService>;
-export const LOCAL_STORAGE_SERVICE_TOKEN = Symbol() as InjectionKey<ILocalStorageService>;
-export const services = new Services();
 
-createApp(App)
-.use(VCalendar, {})
-.use(router)
-.mount('#app');
 

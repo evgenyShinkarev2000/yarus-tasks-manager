@@ -23,12 +23,10 @@ export class TaskVM implements ITaskFull{
   priorityId: string;
 
   constructor(fullTask: ITaskFull) {
-    debugger;
     Object.assign(this, fullTask);
   }
 
   public getCopy(): ITaskFull{
-    debugger;
     const checkListCopy: ICheckedListItem[] = !this.checkList ? [] : this.checkList.map(item => {
       return Object.assign({}, item);
     });

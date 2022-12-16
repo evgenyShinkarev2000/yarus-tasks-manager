@@ -14,7 +14,7 @@
         </template>
       </DropDownListV2>
     </div>
-    <div class="flex-inline space">
+    <div class="flex-inline space" @click.prevent="">
       <h4 class="h4-font">Исполнитель</h4>
       <DropDownListV2 :list-provider="contractorsProvider">
         <template #option="{ idPairName }">
@@ -84,30 +84,30 @@ export default defineComponent({
         this.projectsProvider.changeSelected(projectTask?.index ?? 0);
       })
     );
-    this.subscriptions.push(
-      this.projectsProvider.selected$.subscribe(selectedProjectOption =>
-      {
-        if (!selectedProjectOption)
-        {
-          this.contractorsProvider.setItems();
-        } else
-        {
-          services.resourceManager.getContractorsByProject$(selectedProjectOption.item.id).pipe(
-            take(1),
-          ).subscribe(contractors =>
-          {
-            this.contractorsProvider.setItems(contractors);
-            const contractorTask = this.contractorsProvider.findItemById(this.taskCopy?.contractorId) 
-              ?? this.contractorsProvider.findItemById(services.resourceManager.currentUser.id);
-            if (!contractorTask && this.taskCopy?.contractorId)
-            {
-              throw new Error("В задаче id исполнителя, которого не существует");
-            }
-            this.contractorsProvider.changeSelected(contractorTask?.index ?? 0);
-          });
-        }
-      })
-    );
+    // this.subscriptions.push(
+    //   this.projectsProvider.selected$.subscribe(selectedProjectOption =>
+    //   {
+    //     if (!selectedProjectOption)
+    //     {
+    //       this.contractorsProvider.setItems();
+    //     } else
+    //     {
+    //       services.resourceManager.getContractorsByProject$(selectedProjectOption.item.id).pipe(
+    //         take(1),
+    //       ).subscribe(contractors =>
+    //       {
+    //         this.contractorsProvider.setItems(contractors);
+    //         const contractorTask = this.contractorsProvider.findItemById(this.taskCopy?.contractorId) 
+    //           ?? this.contractorsProvider.findItemById(services.resourceManager.currentUser.id);
+    //         if (!contractorTask && this.taskCopy?.contractorId)
+    //         {
+    //           throw new Error("В задаче id исполнителя, которого не существует");
+    //         }
+    //         this.contractorsProvider.changeSelected(contractorTask?.index ?? 0);
+    //       });
+    //     }
+    //   })
+    // );
     this.subscriptions.push(
       services.resourceManager.priorities$.subscribe(priorities =>
       {
@@ -156,7 +156,6 @@ export default defineComponent({
   methods: {
     confirmClick(): void
     {
-      debugger;
       this.taskCopy.checkList = this.checkListItems$.value;
       this.taskCopy.deadline = new DateVM(this.deadLine$.value);
       this.taskCopy.projectId = this.projectsProvider.selected!.item.id;
@@ -173,10 +172,11 @@ export default defineComponent({
       else if (this.appearance === 'existed'){
         services.resourceManager.putTask(this.taskCopy);
       }
+
+      services.modalWindow.closeSignal$.next();
     },
     cancelClick(): void
     {
-      debugger;
       services.modalWindow.closeSignal$.next();
     }
   },

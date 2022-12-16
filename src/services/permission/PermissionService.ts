@@ -1,4 +1,5 @@
 import router from "@/router";
+import { BehaviorSubject, Observable } from "rxjs";
 import { RouteLocation } from "vue-router";
 import { ILocalStorageService } from "../local-storage/ILocalStorageService";
 import { IPermissionService } from "./IPermissionService";
@@ -16,12 +17,15 @@ export class PermissionService implements IPermissionService {
         this._userPermissions = new Set(localStorageService.getPermissions() ?? []);
     }
 
-    authenticate(login: string, password: string): Promise<boolean> {
+    authenticate(login: string, password: string): Observable<boolean> {
         this._localStorageService.setPermissions([Permission.Authenticated]);
-        return new Promise(() => {
-            setTimeout(() => true, 500);
+        const stream$ = new Observable<boolean>(s => {
+            s.next(true);
             this._userPermissions.add(Permission.Authenticated);
-        });
+            s.complete();
+        })
+
+        return stream$;
     }
 
     exit(): void {

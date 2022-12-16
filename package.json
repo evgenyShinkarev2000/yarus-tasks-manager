@@ -8,9 +8,11 @@
   },
   "dependencies": {
     "@reactivex/rxjs": "^6.6.7",
+    "axios": "^1.2.1",
     "rxjs": "^7.5.7",
     "v-calendar": "^3.0.0-alpha.8",
     "vue": "^3.2.13",
+    "vue-axios": "^3.5.2",
     "vue-router": "^4.0.3"
   },
   "devDependencies": {

@@ -21,6 +21,7 @@ import { IFieldValidator } from '@/interfaces/IFiledValidator';
 import { emptyStatement } from '@babel/types';
 import { Empty as Required } from '@/view-models/FieldValidators';
 import { IFormFieldValidState } from '@/interfaces/IFormFieldValidState';
+import { BehaviorSubject } from 'rxjs';
 interface IAppearanceSettings {
   inputType: string,
   leftIconName?: string,
@@ -51,12 +52,16 @@ export default defineComponent({
     appearance: {
       type: String as PropType<FormFieldAppearance>,
       default: "text"
-    }
+    },
+    inputContainer: {
+      type: Object as PropType<{input: string}>,
+      default: {input: ""}
+    },
   },
   computed: {
     appearanceSetting(): IAppearanceSettings {
       return appearanceSettingSelector[this.appearance];
-    }
+    },
   },
   data() {
     return {
@@ -71,6 +76,7 @@ export default defineComponent({
   methods: {
     inputChange(e: Event): void {
       const input = e.target as HTMLInputElement;
+      this.inputContainer.input = input.value;
       this.isDirty = input.value.length > 0;
       this.appearanceSetting.validators.forEach((validator: IFieldValidator) => validator.validate(input.value));
       //@ts-ignore

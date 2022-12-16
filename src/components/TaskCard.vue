@@ -96,8 +96,9 @@ export default defineComponent({
     flex-direction: column;
     gap: calc(4 * var(--shpx));
     .marker-line{
-      width: 100%;
-      height: calc(2 * var(--shpx));
+      flex-basis: calc(2 * var(--shpx));
+      flex-grow: 1;
+      flex-shrink: 0;
     }
   }
 

@@ -1,7 +1,7 @@
 <template>
   <form @submit.prevent="">
-    <FormFiled :appearance="'login'" @input-valid-change="inputValidChange"></FormFiled>
-    <FormFiled :appearance="'password'" @input-valid-change="inputValidChange"></FormFiled>
+    <FormFiled :appearance="'login'" :input-container="loginInput" @input-valid-change="inputValidChange"></FormFiled>
+    <FormFiled :appearance="'password'" :input-container="passwordInput"  @input-valid-change="inputValidChange"></FormFiled>
     <button class="h2-font" :class="isDisabled ? 'disabled' : 'enabled'" @click.prevent="submitButtonClick">Войти</button>
   </form>
 </template>
@@ -10,6 +10,7 @@
 import { IFieldValidator } from '@/interfaces/IFiledValidator';
 import { IFormFieldValidState } from '@/interfaces/IFormFieldValidState';
 import { services } from '@/main';
+import { BehaviorSubject, take } from 'rxjs';
 import { defineComponent } from 'vue';
 import FormFiled from './FormFiled.vue';
 
@@ -41,14 +42,24 @@ export default defineComponent({
         return;
       }
 
-      services.permissionService.authenticate("123", "123");
-      this.$router.push({name: 'workPlace'});
+      services.permissionService.authenticate(this.loginInput.input, this.passwordInput.input).
+      pipe(take(1)).subscribe
+      (isAuth => {
+        if (isAuth){
+          this.$router.push({name: 'workPlace'});
+        }
+        else{
+          alert("Неверный логин или пароль");
+        }
+      });
     }
   },
   data(){
     return{
       isDisabled: true,
-      fieldsValidState: []
+      fieldsValidState: [],
+      loginInput: {input: ""},
+      passwordInput: {input: ""},
     }
   }
 })

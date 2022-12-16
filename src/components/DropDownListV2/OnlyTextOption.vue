@@ -12,7 +12,7 @@ export default defineComponent({
   props: {
     idPairName: {
       type: Object as PropType<IIdPairName>
-    }
+    },
   },
   computed: {
   },

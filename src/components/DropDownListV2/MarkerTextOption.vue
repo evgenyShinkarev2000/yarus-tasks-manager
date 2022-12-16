@@ -24,15 +24,16 @@ export default defineComponent({
       {
         return "";
       }
-      if (this.idPairName.id === "1")
+      if (this.idPairName.id == "1")
       {
-        return "red";
+        return "blue";
       }
-      if (this.idPairName.id === "2")
+      if (this.idPairName.id == "2")
       {
         return "yellow";
       }
-      return "blue";
+
+      return "red";
     }
   },
   methods: {

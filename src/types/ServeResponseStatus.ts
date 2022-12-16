@@ -1,0 +1,1 @@
+export type ServerResponseStatus = "ok" | "serverError" | "notFound" | "authenticationError" | "unAuthorized" | "invalidDate" | "unknownStatus"

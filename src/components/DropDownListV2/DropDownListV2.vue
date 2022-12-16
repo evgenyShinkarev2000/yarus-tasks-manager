@@ -25,6 +25,10 @@ export default defineComponent({
   props: {
     listProvider: {
       type: Object as PropType<DropDownListProvider<any>>
+    },
+    isDisabled: {
+      default: false,
+      type: Boolean
     }
   },
   created() {

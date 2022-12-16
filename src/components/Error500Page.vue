@@ -8,6 +8,6 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-	name: 'Error404Page'
+	name: 'Error500Page',
 })
 </script>

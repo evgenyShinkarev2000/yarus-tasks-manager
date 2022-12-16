@@ -34,9 +34,9 @@ export default defineComponent({
     }
   },
   created(){
+    this.services.resourceManager.initTasks();
     services.resourceManager.getStatuses().then((data: IIdPairName[]) => {
       this.taskStatuses = data;
-      this.services.resourceManager.initTasks();
     });
   },
   mounted() {

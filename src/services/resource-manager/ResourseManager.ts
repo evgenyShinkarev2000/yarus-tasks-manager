@@ -221,7 +221,7 @@ export class ResourceManager implements IResourceManager
 
     this.taskFilter.setElementsToFilter(this._shortTasks);
 
-    const stream$ = new BehaviorSubject<IServerAnswer<ITaskFull>>({isOk: true, item: fullTask});
+    const stream$ = new BehaviorSubject<IServerAnswer<ITaskFull>>({status:"ok", item: fullTask});
     stream$.complete();
 
     return stream$;
@@ -236,7 +236,7 @@ export class ResourceManager implements IResourceManager
     this._fullTasks.push(fullTask);
     this._shortTasks.push(fullTask);
     this.taskFilter.setElementsToFilter(this._shortTasks);
-    const stream$ = new BehaviorSubject<IServerAnswer<ITaskFull>>({isOk: true, item: fullTask});
+    const stream$ = new BehaviorSubject<IServerAnswer<ITaskFull>>({status: "ok", item: fullTask});
     stream$.complete();
 
     return stream$;
