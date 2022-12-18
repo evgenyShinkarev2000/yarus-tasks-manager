@@ -13,6 +13,10 @@ export class ReactiveFilter<T>{
     this._minFiltersCount = num;
   }
 
+  public get elementsToFilter(): ReadonlyArray<T>{
+    return this._elementsToFilter;
+  }
+
   public getFilterSetter(filterName: string = ""): (filter: (elementToValid: T) => boolean) => void{
     const key = Symbol(filterName);
     const setter = (filter: (elementToValid: T) => boolean) => {
