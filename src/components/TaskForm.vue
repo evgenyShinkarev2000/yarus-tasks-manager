@@ -58,14 +58,14 @@ import DropDownListV2 from '@/components/DropDownListV2/DropDownListV2.vue';
 import OnlyTextOption from './DropDownListV2/OnlyTextOption.vue';
 import { DropDownListProvider } from '@/view-models/DropDownListProvider';
 import { services } from '@/main';
-import { BehaviorSubject, Observable, Subject, Subscription, take } from 'rxjs';
+import { BehaviorSubject, first, Observable, Subject, Subscription, take } from 'rxjs';
 import { IIdPairName } from '@/interfaces/IIdPairName';
 import { IUser } from '@/interfaces/IUser';
 import MarkerTextOption from './DropDownListV2/MarkerTextOption.vue';
 import CheckList from './CheckList.vue';
 import { ICheckedListItem } from '@/interfaces/ICheckedListItem';
 import Calendar from './Calendar.vue';
-import { TaskVM } from '@/view-models/TaskVM';
+import { TaskFull } from '@/view-models/TaskVM';
 import {DateVM} from '@/view-models/DateVM';
 
 export default defineComponent({
@@ -108,6 +108,7 @@ export default defineComponent({
     //     }
     //   })
     // );
+    this.contractorsProvider.setItems([services.localStorageService.user]);
     this.subscriptions.push(
       services.resourceManager.priorities$.subscribe(priorities =>
       {
@@ -138,7 +139,7 @@ export default defineComponent({
   },
   data()
   {
-    const taskCopy = new TaskVM(this.task!).getCopy();
+    const taskCopy = new TaskFull(this.task!).getCopy();
     return {
       taskCopy,
       projectsProvider: new DropDownListProvider<IIdPairName>(idPairName => idPairName),
@@ -167,13 +168,21 @@ export default defineComponent({
       this.taskCopy.contractorSurname = this.contractorsProvider.selected!.item.surname;
 
       if (this.appearance === 'new'){
-        services.resourceManager.addTask(this.taskCopy);
+        services.resourceManager.addTask(this.taskCopy).pipe(first()).subscribe({
+          next: () => {
+            services.modalWindow.closeSignal$.next();
+          },
+          error: () => {
+            alert("Ошибка");
+          },
+        });
       }
       else if (this.appearance === 'existed'){
-        services.resourceManager.putTask(this.taskCopy);
+        services.resourceManager.putTask(this.task as ITaskFull, this.taskCopy).pipe(first()).subscribe({
+          next: () => services.modalWindow.closeSignal$.next(),
+          error: () => alert("Ошибка"),
+        });
       }
-
-      services.modalWindow.closeSignal$.next();
     },
     cancelClick(): void
     {

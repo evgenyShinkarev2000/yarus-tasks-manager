@@ -202,7 +202,7 @@ export class ResourceManager implements IResourceManager
     return fullTask$;
   }
 
-  public putTask(fullTask: ITaskFull): Observable<IServerAnswer<ITaskFull>>
+  public putTask(fullTaskOld: ITaskFull, fullTask: ITaskFull): Observable<ITaskFull>
   {
     let index = this._fullTasks.findIndex(t => t.id === fullTask.id);
     if (index >= 0){
@@ -221,13 +221,13 @@ export class ResourceManager implements IResourceManager
 
     this.taskFilter.setElementsToFilter(this._shortTasks);
 
-    const stream$ = new BehaviorSubject<IServerAnswer<ITaskFull>>({status:"ok", item: fullTask});
+    const stream$ = new BehaviorSubject<ITaskFull>(fullTask);
     stream$.complete();
 
     return stream$;
   }
 
-  addTask(fullTask: ITaskFull): Observable<IServerAnswer<ITaskFull>>
+  addTask(fullTask: ITaskFull): Observable<ITaskFull>
   {
     fullTask.statusId = "1";
     fullTask.statusName = "Создано";
@@ -236,7 +236,7 @@ export class ResourceManager implements IResourceManager
     this._fullTasks.push(fullTask);
     this._shortTasks.push(fullTask);
     this.taskFilter.setElementsToFilter(this._shortTasks);
-    const stream$ = new BehaviorSubject<IServerAnswer<ITaskFull>>({status: "ok", item: fullTask});
+    const stream$ = new BehaviorSubject<ITaskFull>(fullTask);
     stream$.complete();
 
     return stream$;

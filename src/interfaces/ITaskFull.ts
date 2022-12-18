@@ -6,7 +6,7 @@ export interface ITaskFull extends ITaskShort{
   authorId: string,
   contractorId: string,
   description: string,
-  actualTime: Date,
+  actualTime: number,
   accepted: boolean,
   compleatedAt: Date,
   checkList: ICheckedListItem[],

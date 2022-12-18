@@ -65,6 +65,7 @@ export default defineComponent({
   mounted(){
     this.services.resourceManager.taskFilter.filteredElements$.subscribe(tasks => {
       this.tasksCards = tasks;
+      this.$forceUpdate();
     })
   }
 })

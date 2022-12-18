@@ -63,9 +63,11 @@
 <script lang="ts">
 import { ICheckedListItem } from '@/interfaces/ICheckedListItem';
 import { ITaskFull } from '@/interfaces/ITaskFull';
+import { ITaskShort } from '@/interfaces/ITaskShort';
 import { services } from '@/main';
+import { devNull } from 'os';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 import Calendar from './Calendar.vue';
 import CheckList from './CheckList.vue';
 import CheckListItemView from './CheckListItem.vue';
@@ -74,16 +76,16 @@ import TaskForm from './TaskForm.vue';
 export default defineComponent({
   name: "FullTaskViewer",
   props: {
-    taskId: {
-      type: String,
+    shortTask: {
+      type: Object as PropType<ITaskShort>,
     }
   },
   created() {
-    if (!this.taskId) {
+    if (!this.shortTask) {
       throw new Error();
     }
     this.subsciptions.push(
-      services.resourceManager.getFullTaskById(this.taskId).subscribe(task => {
+      services.resourceManager.getFullTaskById(this.shortTask.projectId, this.shortTask.id).subscribe(task => {
         this.task = task;
         this.isLoaded = true;
       }));
@@ -93,13 +95,13 @@ export default defineComponent({
   },
   computed: {
     markerColor(): string {
-      if (this.task?.priorityId === "1") {
-        return "red";
+      if (this.task?.priorityId == "1") {
+        return "blue";
       }
-      else if (this.task?.priorityId === "2") {
+      else if (this.task?.priorityId == "2") {
         return "yellow";
       }
-      return "blue";
+      return "red";
     },
     checkListItems$(): BehaviorSubject<ICheckedListItem[]>{
       const stream$ = new BehaviorSubject<ICheckedListItem[]>(this.task.checkList);

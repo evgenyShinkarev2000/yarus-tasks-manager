@@ -1,10 +1,14 @@
+import { IFullTaskDTOHttpRequest, IFullTaskDTOHttpGetResponse, IFullTaskDTOHttpPostResponse, IFullTaskDTOHttpPutRequest } from "@/dto/http/FullTask";
 import { ILoginDTOHttpRequest, ILoginDTOHttpResponseOk, ILoginDTOHttpResponseWrong } from "@/dto/http/Login";
 import { IProjectsDTOHttpResponse } from "@/dto/http/Projects";
+import { IShortTaskByProjectsDTOHttpResponse } from "@/dto/http/ShortTasksByProjects";
+import { IStageDTOHttp } from "@/dto/http/Stage";
 import { IStatusesDTOHttpResponse } from "@/dto/http/Statuses";
 import { ErrorInterceptor } from "@/interceptors/ErrorInterceptor";
 import { IServerAnswer } from "@/interfaces/IServeAnswer";
+import { TaskFull } from "@/view-models/TaskVM";
 import axios, { Axios, AxiosResponse } from "axios";
-import { from, map, Observable, Subject, take } from "rxjs";
+import { catchError, first, from, map, Observable, Subject, take } from "rxjs";
 import { ILocalStorageService } from "../local-storage/ILocalStorageService";
 import { IServerApi } from "./IServerApi";
 
@@ -87,8 +91,45 @@ export class LocalServerApi implements IServerApi
     return this.getHelper("priorities");
   }
 
-  private getHelper<T>(route: string): Observable<IServerAnswer<T>>{
-    return from(this._axios.get<T>(route)).pipe(
+  public getTasksByProjectsId(projectsId: string[]): Observable<IServerAnswer<IShortTaskByProjectsDTOHttpResponse[]>>
+  {
+    const promise = this._axios.get("tasks", {
+      params: {
+        "projectsId[]": projectsId,
+      }
+    })
+
+    return this.streamHelper<IShortTaskByProjectsDTOHttpResponse[]>(promise);
+  }
+
+  public getFullTask(projectId: string, taskId: string): Observable<IServerAnswer<IFullTaskDTOHttpGetResponse>>
+  {
+    return this.getHelper(`tasks/${projectId}/${taskId}`);
+  }
+
+  public postTask(fullTaskDto: IFullTaskDTOHttpRequest): Observable<IServerAnswer<IFullTaskDTOHttpPostResponse>>
+  {
+    // при создании должно быть только описание, иначе ошибка валидации;
+    fullTaskDto.stages = fullTaskDto.stages.map(s => {
+      return (s as IStageDTOHttp).description as string;
+    });
+
+    return this.streamHelper(this._axios.post("tasks", fullTaskDto));
+  }
+
+  public putTask(fullTaskDto: IFullTaskDTOHttpPutRequest, projectId: number | string, taskId: number | string): Observable<IServerAnswer<undefined>>
+  {
+    return this.streamHelper(this._axios.put(`tasks/${projectId}/${taskId}`, fullTaskDto));
+  }
+
+  private getHelper<T>(route: string): Observable<IServerAnswer<T>>
+  {
+    return this.streamHelper(this._axios.get<T>(route));
+  }
+
+  private streamHelper<T>(promise: Promise<any>): Observable<IServerAnswer<T>>
+  {
+    return from(promise).pipe(
       take(1),
       map((response: AxiosResponse) =>
       {
@@ -97,7 +138,11 @@ export class LocalServerApi implements IServerApi
           status: "ok",
           item: data,
         } as IServerAnswer<T>
+      }),
+      catchError(e => {
+        debugger;
+         throw e;
       })
-    );
+    )
   }
 }

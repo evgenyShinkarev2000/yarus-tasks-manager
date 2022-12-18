@@ -36,8 +36,13 @@ export class PermissionRemoteService implements IPermissionService
         if (serverAnswer.status === "ok"){
           this._localStorageService.setPermissions([Permission.Authenticated]);
           this._userPermissions.add(Permission.Authenticated);
-          const okResponse = (serverAnswer.item as ILoginDTOHttpResponseOk)
-          this._localStorageService.user = okResponse;
+          const okResponse = (serverAnswer.item as ILoginDTOHttpResponseOk);
+
+          this._localStorageService.user = {
+            id: okResponse.id.toString(),
+            name: okResponse.name,
+            surname: okResponse.surname,
+          };
           const token = okResponse.token_type + " " + okResponse.token;
           this._serverApi.updateToken(token);
           this._localStorageService.setToken(token);

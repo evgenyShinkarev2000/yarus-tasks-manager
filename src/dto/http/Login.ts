@@ -4,7 +4,7 @@ export interface ILoginDTOHttpRequest{
 }
 
 export interface ILoginDTOHttpResponseOk{
-  id: string,
+  id: number,
   name: string,
   surname: string,
   token_type: string,

@@ -7,14 +7,14 @@ import { ReactiveFilter } from "@/view-models/ReactiveFilter";
 import { Observable } from "rxjs";
 
 export interface IResourceManager{
-  putTask(fullTask: ITaskFull): Observable<IServerAnswer<ITaskFull>>; 
-  addTask(fullTask: ITaskFull): Observable<IServerAnswer<ITaskFull>>;
+  putTask(fullTaskOld: ITaskFull, fullTaskNew: ITaskFull): Observable<ITaskFull>; 
+  addTask(fullTask: ITaskFull): Observable<ITaskFull>;
   getProjects(): Promise<IIdPairName[]>;
   getContractorsByProjects$(ids: string[]): Observable<IUser[]>;
   getContractorsByProject$(projectId: string): Observable<IUser[]>;
   getPriorities(): Promise<IIdPairName[]>;
   getStatuses(): Promise<IIdPairName[]>;
-  getFullTaskById(id: string): Observable<ITaskFull>;
+  getFullTaskById(projectId: string, taskId: string): Observable<ITaskFull>;
   initTasks(): void;
   readonly taskFilter: ReactiveFilter<ITaskShort>;
   get currentUser(): IUser;

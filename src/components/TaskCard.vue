@@ -20,7 +20,7 @@
     </div>
   </div>
   <ModalTemplate v-if="isModalShow">
-    <FullTaskViwer :task-id="shortTask?.id"></FullTaskViwer>
+    <FullTaskViwer :short-task="shortTask"></FullTaskViwer>
   </ModalTemplate>
 </template>
 
@@ -46,13 +46,13 @@ export default defineComponent({
     {
       if (this.shortTask?.priorityId === "1")
       {
-        return "red";
+        return "blue";
       }
       else if (this.shortTask?.priorityId === "2")
       {
         return "yellow";
       }
-      return "blue";
+      return "red";
     }
   },
   props: {

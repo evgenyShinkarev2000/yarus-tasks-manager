@@ -12,4 +12,12 @@ export class DateVM{
   public getCopy(): DateVM{
     return new DateVM(new Date(this.date.getTime()));
   }
+
+  public toSqlDate(): string{
+    return DateVM.toSqlDate(this.date);
+  }
+
+  public static toSqlDate(date: Date): string{
+    return date.toISOString().slice(0, 19).replace('T', ' ');
+  }
 }

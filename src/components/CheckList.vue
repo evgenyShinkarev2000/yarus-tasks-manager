@@ -1,5 +1,5 @@
 <template>
-  <CheckListItem v-for="item of items$?.value" :check-list-item="item" :key="item.id" :mode="mode" @remove="removeItem(item.id)">
+  <CheckListItem v-for="item, index of items$?.value" :check-list-item="item" :key="index" :mode="mode" @remove="removeItem(index)">
   </CheckListItem>
   <div class="add" v-if="mode === 'edit'">
     <input class="input general-font" placeholder="Навзание этапа" ref="input">
@@ -38,15 +38,15 @@ export default defineComponent({
     }
   },
   methods: {
-    removeItem(id: string)
+    removeItem(index: number)
     {
-      this.items$?.next(this.items$.value.filter(i => i.id !== id));
+      this.items$?.value.splice(index, 1);
+      this.items$?.next(this.items$?.value);
     },
     addItem(): void{
       const input = this.$refs.input as HTMLInputElement;
       const items = this.items$!.value;
-      const id = items.length > 0 ? items[items.length - 1].id + Math.random().toString() : Math.random().toString();
-      const checkListItem: ICheckedListItem = {id, isClosed: false, name: input.value};
+      const checkListItem: ICheckedListItem = {isClosed: false, name: input.value};
       this.items$?.next(this.items$.value.concat(checkListItem));
       input.value = "";
     }
