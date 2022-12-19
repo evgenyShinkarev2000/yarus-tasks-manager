@@ -108,7 +108,10 @@ export default defineComponent({
     //     }
     //   })
     // );
-    this.contractorsProvider.setItems([services.localStorageService.user]);
+    this.contractorsProvider.setItems(this.appearance === 'existed' 
+    ? [{id: this.task!.contractorId, name: this.task!.contractorName, surname: this.task!.contractorSurname}] 
+    : [services.localStorageService.user]);
+
     this.subscriptions.push(
       services.resourceManager.priorities$.subscribe(priorities =>
       {
@@ -166,6 +169,8 @@ export default defineComponent({
       this.taskCopy.contractorId = this.contractorsProvider.selected!.item.id;
       this.taskCopy.contractorName = this.contractorsProvider.selected!.item.name;
       this.taskCopy.contractorSurname = this.contractorsProvider.selected!.item.surname;
+      //@ts-ignore
+      this.taskCopy.description = this.taskCopy.description?.trim() ? this.taskCopy.description : undefined;
 
       if (this.appearance === 'new'){
         services.resourceManager.addTask(this.taskCopy).pipe(first()).subscribe({

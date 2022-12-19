@@ -22,6 +22,11 @@ export class PermissionService implements IPermissionService {
         const stream$ = new Observable<boolean>(s => {
             s.next(true);
             this._userPermissions.add(Permission.Authenticated);
+            this._localStorageService.user = {
+                id: "1",
+                name: "Евгений",
+                surname: "Шинкарев",
+              };
             s.complete();
         })
 

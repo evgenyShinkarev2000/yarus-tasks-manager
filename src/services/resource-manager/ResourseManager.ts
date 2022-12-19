@@ -45,7 +45,7 @@ export class ResourceManager implements IResourceManager
     },
     {
       id: "9", title: "Востановить режим сна", priorityId: "2", statusId: "3", projectId: "1", contractorId: "2",
-      deadline: new DateVM(), contractorName: "Игорь", contractorSurname: "Меркушев"
+      deadline: new DateVM(), contractorName: "Евгений", contractorSurname: "Шинкарев"
     },
     {
       id: "10", title: "Разобраться с rxjs", priorityId: "3", statusId: "4", projectId: "1", contractorId: "2",
