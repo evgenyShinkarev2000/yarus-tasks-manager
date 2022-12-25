@@ -6,7 +6,7 @@ export class DateVM{
   }
 
   public get dateStringOnly(): string{
-    return `${this.date.getDate()}.${this.date.getMonth()}.${this.date.getFullYear()}`
+    return `${this.date.getDate()}.${this.date.getMonth() + 1}.${this.date.getFullYear()}`
   }
 
   public getCopy(): DateVM{
@@ -18,6 +18,12 @@ export class DateVM{
   }
 
   public static toSqlDate(date: Date): string{
-    return date.toISOString().slice(0, 19).replace('T', ' ');
+    const pad = function(num: number) { return ('00'+num).slice(-2) };
+    return date.getFullYear()         + '-' +
+    pad(date.getMonth() + 1)  + '-' +
+    pad(date.getDate())       + ' ' +
+    pad(date.getHours())      + ':' +
+    pad(date.getMinutes())    + ':' +
+    pad(date.getSeconds());
   }
 }

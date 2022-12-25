@@ -81,7 +81,7 @@ export class ResourceManagerRemote implements IResourceManager
       priority_id: parseInt(fullTaskNew.priorityId),
       project_id: parseInt(fullTaskNew.projectId),
       status_id: parseInt(fullTaskNew.statusId),
-      stages,
+      stages: stages.length > 0 ? stages : undefined,
     }
     return this._serverApi.putTask(taskDto, fullTaskOld.projectId, fullTaskOld.id).pipe(
       first(),
@@ -96,6 +96,7 @@ export class ResourceManagerRemote implements IResourceManager
   public addTask(fullTask: ITaskFull): Observable<ITaskFull>
   {
     const taskDto: IFullTaskDTOHttpRequest = TaskFull.toDto(fullTask);
+    taskDto.stages = taskDto.stages?.length ?? -1 > 0 ? taskDto.stages : undefined;
 
     return this._serverApi.postTask(taskDto).pipe(
       first(),

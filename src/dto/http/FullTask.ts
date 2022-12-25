@@ -5,7 +5,7 @@ export interface IFullTaskDTOHttpRequest
   project_id: number,
   priority_id: number,
   name: string,
-  stages: string[],
+  stages?: string[],
   description: string,
   deadline: string,
 }
@@ -18,7 +18,7 @@ export interface IFullTaskDTOHttpPutRequest{
   deadline?: string,
   description?: string
   actual_time?: number,
-  stages: IStageDTOHttp[],
+  stages?: IStageDTOHttp[],
 }
 
 export interface IFullTaskDTOHttpPostResponse

@@ -35,7 +35,7 @@ export default defineComponent({
     {
       const date = this.selectedDate$?.value;
 
-      return `${date?.getDate()}.${date?.getMonth()}.${date?.getFullYear()}`;
+      return `${date?.getDate()}.${date?.getMonth() as number + 1}.${date?.getFullYear()}`;
     },
     attributes(): any[]
     {
@@ -52,6 +52,7 @@ export default defineComponent({
   },
   methods: {
     setDate(date: any){
+      debugger;
       this.selectedDate$.next(date.date);
     },
     collapseAtClickOutside(mouseEvent: MouseEvent): void{

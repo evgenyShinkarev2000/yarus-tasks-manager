@@ -24,7 +24,7 @@ export class LocalServerApi implements IServerApi
     this.token = this._localStorageService.token ?? "";
 
     this._axios = axios.create({
-      baseURL: "http://trello/public/api/",
+      baseURL: "http://trellolaravel/public/api/",
       headers: {
         "Accept": "application/json",
         "Authorization": this.token,
@@ -110,7 +110,7 @@ export class LocalServerApi implements IServerApi
   public postTask(fullTaskDto: IFullTaskDTOHttpRequest): Observable<IServerAnswer<IFullTaskDTOHttpPostResponse>>
   {
     // при создании должно быть только описание, иначе ошибка валидации;
-    fullTaskDto.stages = fullTaskDto.stages.map(s => {
+    fullTaskDto.stages = fullTaskDto.stages?.map(s => {
       return (s as IStageDTOHttp).description as string;
     });
 

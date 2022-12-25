@@ -1,8 +1,8 @@
 <template>
   <div class="column">
     <div class="title h2-font"> {{status?.name}} </div>
-    <div class="cards tasks-scrollbar">
-      <div class="card" v-for:="task of filteredByStatusTasks" :key="task.id">
+    <div class="cards tasks-scrollbar" @drop="drop" @dragover.prevent="dragOver">
+      <div class="card" v-for:="task of filteredByStatusTasks" :key="task.id" @dragstart="dragStart(task, $event)" draggable="true">
         <TaskCard :short-task="task"></TaskCard>
       </div>
     </div>
@@ -38,7 +38,7 @@ export default defineComponent({
 
       const filtered = this.tasksCards.filter(task => task.statusId === this.status!.id);
       filtered.sort((a, b) => {
-        if(a.priorityId > b.priorityId){
+        if(a.priorityId < b.priorityId){
           return 1;
         } else if(a.priorityId < b.priorityId){
           return -1;
@@ -67,6 +67,15 @@ export default defineComponent({
       this.tasksCards = tasks;
       this.$forceUpdate();
     })
+  },
+  methods:{
+    dragStart(task: ITaskShort){
+
+    },
+    drop(){
+    },
+    dragOver(e: Event){
+    }
   }
 })
 </script>
@@ -90,6 +99,7 @@ export default defineComponent({
   }
 
   .cards {
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
