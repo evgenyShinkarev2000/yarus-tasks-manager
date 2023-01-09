@@ -12,15 +12,15 @@
         </button>
       </div>
     </div>
-    <ModalTemplate v-if="isCreateTask">
+    <!-- <ModalTemplate v-if="isCreateTask">
       <TaskForm :task="{ projectId: selectedProject.id }" :appearance="'new'">
       </TaskForm>
-    </ModalTemplate>
+    </ModalTemplate> -->
   </section>
 </template>
     
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { createApp, defineComponent, h } from 'vue';
 import { services } from '@/main';
 import DropDownList from './DropDownList.vue';
 import { IIdPairName } from '@/interfaces/IIdPairName';
@@ -29,6 +29,7 @@ import ModalTemplate from './ModalTemplate.vue';
 import TaskForm from './TaskForm.vue';
 import { Subscription } from 'rxjs';
 import { ITaskFull } from '@/interfaces/ITaskFull';
+import FullTaskViwer from './FullTaskViwer.vue';
 
 
 export default defineComponent({
@@ -109,7 +110,8 @@ export default defineComponent({
     },
     createTaskClick(): void
     {
-      this.isCreateTask = true;
+      services.modalWindow.showComponent$
+      .next(h(TaskForm, {task:{ projectId: this.selectedProject.id } as ITaskFull, appearance:"new"}));
     },
   }
 });

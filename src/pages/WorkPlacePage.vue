@@ -7,9 +7,11 @@
     <router-view />
   </div>
   </div>
+  <ModalTemplate></ModalTemplate>
 </template>
 <script lang="ts">
 import MainHeader from '@/components/MainHeader.vue';
+import ModalTemplate from '@/components/ModalTemplate.vue';
 import { defineComponent } from 'vue';
 
 export default defineComponent({
@@ -17,7 +19,7 @@ export default defineComponent({
   created() {
   },
   computed: {},
-  components: { MainHeader }
+  components: { MainHeader, ModalTemplate }
 })
 </script>
 <style lang="scss" scoped>
