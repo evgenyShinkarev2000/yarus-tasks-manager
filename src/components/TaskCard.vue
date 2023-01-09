@@ -1,5 +1,5 @@
 <template>
-  <div class="host" @click="isModalShow = true">
+  <div class="host" @click="showFullTaskViewer">
     <div class="top">
       <div class="label h4-font">{{ shortTask?.title }}.</div>
       <div class="marker-line" :class="markerColor"></div>
@@ -19,14 +19,14 @@
       </div>
     </div>
   </div>
-  <ModalTemplate v-if="isModalShow">
+  <!-- <ModalTemplate v-if="isModalShow">
     <FullTaskViwer :short-task="shortTask"></FullTaskViwer>
-  </ModalTemplate>
+  </ModalTemplate> -->
 </template>
 
 <script lang="ts">
 import { ITaskShort } from '@/interfaces/ITaskShort';
-import { defineComponent, PropType } from 'vue';
+import { createApp, defineComponent, h, PropType } from 'vue';
 import ModalTemplate from './ModalTemplate.vue';
 import FullTaskViwer from './FullTaskViwer.vue';
 import { services } from '@/main';
@@ -58,6 +58,13 @@ export default defineComponent({
   props: {
     shortTask: {
       type: Object as PropType<ITaskShort>
+    }
+  },
+  methods:{
+    showFullTaskViewer(): void{
+      // const vNode = h(FullTaskViwer, {shortTask: this.shortTask});
+      const vNode = h(FullTaskViwer, {adv: "312"});
+      services.modalWindow.showComponent$.next(vNode);
     }
   },
   created()

@@ -1,19 +1,43 @@
-<template>
+<!-- <template>
   <div @click="clickHandler" class="modal-window">
     <div class="card tasks-scrollbar" ref=cardRef>
-      <slot></slot>
     </div>
   </div>
-</template>
+</template> -->
 
-<script lang="ts">import { defineComponent } from 'vue';
+<script lang="ts">import { App, Component, defineComponent, h, resolveComponent, resolveDynamicComponent, VNode} from 'vue';
 import { services } from '@/main';
+import { Subscription } from 'rxjs';
+import FullTaskViwer from './FullTaskViwer.vue';
+import TaskCard from './TaskCard.vue';
+import TaskForm from './TaskForm.vue';
 
 export default defineComponent({
   name: "ModalTemplate",
+  render(){
+    const modalWindowClasses = ["modal-window"];
+    if (!this.innerVNode){
+      modalWindowClasses.push("hidden");
+    }
+    return h("div", {onClick: this.clickHandler, class: modalWindowClasses.join(" ")},h(
+      "div", {class: "card tasks-scrollbar", ref: "cardRef"}, this.innerVNode));
+  },
   data(){
     return {
+      subsciptions: [] as Subscription[],
+      innerVNode: undefined as VNode | undefined,
     }
+  },
+  created(){
+    this.subsciptions
+    .push(services.modalWindow.showComponent$
+    .subscribe((vNode: VNode) => this.showComponent(vNode)));
+
+    this.subsciptions
+    .push(services.modalWindow.closeSignal$.subscribe(() => this.closeComponent()));
+  },
+  unmounted(){
+    this.subsciptions.forEach(s => s.unsubscribe);
   },
   methods:{
     clickHandler(clickElent: MouseEvent): void{
@@ -27,6 +51,12 @@ export default defineComponent({
       || clickElent.clientY > card.offsetTop + card.offsetHeight){
         services.modalWindow.closeSignal$.next();
       }
+    },
+    showComponent(vNode: VNode): void{
+      this.innerVNode = vNode;
+    },
+    closeComponent(): void{
+      this.innerVNode = undefined;
     }
   }
 })
@@ -62,5 +92,8 @@ export default defineComponent({
       box-sizing: border-box;
     }
   
+  }
+  .hidden{
+    display: none;
   }
 </style>
