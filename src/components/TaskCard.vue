@@ -19,9 +19,6 @@
       </div>
     </div>
   </div>
-  <!-- <ModalTemplate v-if="isModalShow">
-    <FullTaskViwer :short-task="shortTask"></FullTaskViwer>
-  </ModalTemplate> -->
 </template>
 
 <script lang="ts">
@@ -37,8 +34,7 @@ export default defineComponent({
   data()
   {
     return {
-      isModalShow: false,
-      subscription: [] as Subscription[],
+      subscription: [] as Subscription[]
     };
   },
   computed: {
@@ -62,17 +58,9 @@ export default defineComponent({
   },
   methods:{
     showFullTaskViewer(): void{
-      // const vNode = h(FullTaskViwer, {shortTask: this.shortTask});
-      const vNode = h(FullTaskViwer, {adv: "312"});
+      const vNode = h(FullTaskViwer, {shortTask: this.shortTask});
       services.modalWindow.showComponent$.next(vNode);
     }
-  },
-  created()
-  {
-    this.subscription.push(services.modalWindow.closeSignal$.subscribe(() =>
-    {
-      this.isModalShow = false;
-    }));
   },
   unmounted()
   {
