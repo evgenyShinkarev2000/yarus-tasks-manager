@@ -1,7 +1,7 @@
 <template>
   <div class="column">
     <div class="title h2-font"> {{status?.name}} </div>
-    <div class="cards tasks-scrollbar" @drop="drop" @dragover.prevent="dragOver">
+    <div class="cards tasks-scrollbar" @drop="drop" @dragover.prevent="dragOver" @dragend="dragEnd">
       <div class="card" v-for:="task of filteredByStatusTasks" :key="task.id" @dragstart="dragStart(task, $event)" draggable="true">
         <TaskCard :short-task="task"></TaskCard>
       </div>
@@ -11,8 +11,10 @@
 
 <script lang="ts">
 import { IIdPairName } from '@/interfaces/IIdPairName';
+import { ITaskFull } from '@/interfaces/ITaskFull';
 import { ITaskShort } from '@/interfaces/ITaskShort';
 import { services } from '@/main';
+import { first, map, switchMap, take } from 'rxjs';
 import { defineComponent, PropType } from 'vue';
 import TaskCard from './TaskCard.vue';
 
@@ -69,12 +71,35 @@ export default defineComponent({
     })
   },
   methods:{
-    dragStart(task: ITaskShort){
+    dragStart(task: ITaskShort, e: DragEvent){
+      e.dataTransfer!.setData("task", JSON.stringify(task));
+    },
+    drop(e: DragEvent){
+      const taskString = e.dataTransfer!.getData("task");
+      const task = JSON.parse(taskString) as ITaskShort;
+      if (!task || task.statusId === this.status?.id){
+        return;
+      }
+      this.changeTaskStatus(task);
+    },
+    dragOver(e: DragEvent){
+    },
+    changeTaskStatus(task: ITaskShort): void{
+      services.resourceManager
+      .getFullTaskById(task.projectId, task.id).pipe(
+        first(),
+        switchMap(fullTask => {
+          fullTask.statusId = this.status!.id;
 
-    },
-    drop(){
-    },
-    dragOver(e: Event){
+          return services.resourceManager.putTask(fullTask, fullTask);
+        })
+        ).subscribe({
+          next: (udpatedFullTask: ITaskFull) => {
+            debugger;
+        },
+          error: () => {
+            debugger;
+          }});
     }
   }
 })
