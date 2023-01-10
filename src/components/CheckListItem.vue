@@ -35,7 +35,7 @@ export default defineComponent({
       if (!this.checkListItem){
         return;
       }
-      this.checkListItem.isClosed = !this.checkListItem.isClosed;
+      this.$emit("switchChecked");
     }
   },
 })

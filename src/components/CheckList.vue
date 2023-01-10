@@ -1,5 +1,10 @@
 <template>
-  <CheckListItem v-for="item, index of items$?.value" :check-list-item="item" :key="index" :mode="mode" @remove="removeItem(index)">
+  <CheckListItem 
+  v-for="item, index of items$?.value" 
+  :check-list-item="item" 
+  :key="index" :mode="mode"
+   @remove="removeItem(index)"
+   @switchChecked="switchChecked(index)">
   </CheckListItem>
   <div class="add" v-if="mode === 'edit'">
     <input class="input general-font" placeholder="Навзание этапа" ref="input">
@@ -25,7 +30,8 @@ export default defineComponent({
   },
   props: {
     items$: {
-      type: Object as PropType<BehaviorSubject<Array<ICheckedListItem>>>
+      type: Object as PropType<BehaviorSubject<ICheckedListItem[]>>,
+      required: true,
     },
     mode: {
       type: String as PropType<CheckItemMode>
@@ -49,6 +55,11 @@ export default defineComponent({
       const checkListItem: ICheckedListItem = {isClosed: false, name: input.value};
       this.items$?.next(this.items$.value.concat(checkListItem));
       input.value = "";
+    },
+    switchChecked(index: number): void{
+      const checkedItem = this.items$?.value[index];
+      checkedItem!.isClosed = !checkedItem?.isClosed; 
+      this.items$?.next(this.items$.value);
     }
   },
   components: { CheckListItem }

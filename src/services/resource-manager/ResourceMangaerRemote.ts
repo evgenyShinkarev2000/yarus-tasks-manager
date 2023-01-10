@@ -86,10 +86,10 @@ export class ResourceManagerRemote implements IResourceManager
     return this._serverApi.putTask(taskDto, fullTaskOld.projectId, fullTaskOld.id).pipe(
       first(),
       tap(() => {
+        debugger;
         const updatedTasks = this.taskFilter.elementsToFilter.filter(e => e.id !== fullTaskNew.id).concat(fullTaskNew);
         this.taskFilter.setElementsToFilter(updatedTasks);
       }),
-      
       map(undef => fullTaskNew));
   }
 

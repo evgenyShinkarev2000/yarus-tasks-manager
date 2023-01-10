@@ -14,8 +14,9 @@ import { IIdPairName } from '@/interfaces/IIdPairName';
 import { ITaskFull } from '@/interfaces/ITaskFull';
 import { ITaskShort } from '@/interfaces/ITaskShort';
 import { services } from '@/main';
-import { first, map, switchMap, take } from 'rxjs';
-import { defineComponent, PropType } from 'vue';
+import { catchError, first, map, of, switchMap, take } from 'rxjs';
+import { defineComponent, h, PropType } from 'vue';
+import ErrorCloseTask from './ErrorCloseTask.vue';
 import TaskCard from './TaskCard.vue';
 
 export default defineComponent({
@@ -90,16 +91,39 @@ export default defineComponent({
         first(),
         switchMap(fullTask => {
           fullTask.statusId = this.status!.id;
-
+          
+          if (!this.canChangeStatus(fullTask)){
+            this.showErrorWindow(fullTask);
+            throw "stop"
+          }
           return services.resourceManager.putTask(fullTask, fullTask);
-        })
+        }),
+        first()
         ).subscribe({
           next: (udpatedFullTask: ITaskFull) => {
-            debugger;
         },
-          error: () => {
+          error: (e: any) => {
             debugger;
           }});
+    },
+    canChangeStatus(fullTask: ITaskFull): boolean{
+      const completeStatusId = "2";
+      if (fullTask.statusId !== completeStatusId){
+        return true;
+      }
+      if(!fullTask.actualTime || fullTask.actualTime <= 0){
+        return false;
+      }
+      for(const item of fullTask.checkList){
+        if (!item.isClosed){
+          return false;
+        }
+      }
+
+      return true;
+    },
+    showErrorWindow(fullTask: ITaskFull): void{
+      services.modalWindow.showComponent$.next(h(ErrorCloseTask, {fullTask}));
     }
   }
 })

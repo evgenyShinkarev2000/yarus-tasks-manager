@@ -73,7 +73,7 @@ export default defineComponent({
       width: calc(596 * var(--swpx));
       height: fit-content;
       max-height: calc(792 * var(--shpx));
-      min-height: calc(520 * var(--shpx));
+      // min-height: calc(520 * var(--shpx));
       padding-block: calc(32 * var(--shpx));
       padding-inline: calc(32 * var(--swpx));
       background-color: $grey-0-9;
