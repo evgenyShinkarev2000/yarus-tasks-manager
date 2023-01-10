@@ -39,6 +39,10 @@
       <h4 class="h4-font">Срок выполнения</h4>
       <Calendar :selected-date$="deadLine$" :is-shorted-prop="true"></Calendar>
     </div>
+    <div class="flex-inline space">
+      <h4 class="h4-font">Факт. время выполнения</h4>
+      <ExecutionTime :container="actualTimeContainer"></ExecutionTime>
+    </div>
     <div class="flex-block small-gap-block">
       <h4 class="h4-font">Этапы</h4>
       <CheckList :items$="checkListItems$" :mode="'edit'"></CheckList>
@@ -67,6 +71,7 @@ import { ICheckedListItem } from '@/interfaces/ICheckedListItem';
 import Calendar from './Calendar.vue';
 import { TaskFull } from '@/view-models/TaskVM';
 import {DateVM} from '@/view-models/DateVM';
+import ExecutionTime from './ExecutionTime.vue';
 
 export default defineComponent({
   name: "TaskForm",
@@ -150,6 +155,7 @@ export default defineComponent({
       {
         return { id: user.id, name: `${user.surname} ${user.name}` };
       }),
+      actualTimeContainer: {value: taskCopy.actualTime},
       prioritiesProvider: new DropDownListProvider<IIdPairName>(idPairName => idPairName),
       checkListItems$: new BehaviorSubject<ICheckedListItem[]>(taskCopy?.checkList ?? []),
       deadLine$: new BehaviorSubject<Date | undefined>(taskCopy?.deadline.date),
@@ -169,6 +175,7 @@ export default defineComponent({
       this.taskCopy.contractorId = this.contractorsProvider.selected!.item.id;
       this.taskCopy.contractorName = this.contractorsProvider.selected!.item.name;
       this.taskCopy.contractorSurname = this.contractorsProvider.selected!.item.surname;
+      this.taskCopy.actualTime = this.actualTimeContainer.value;
       //@ts-ignore
       this.taskCopy.description = this.taskCopy.description?.trim() ? this.taskCopy.description : undefined;
 
@@ -195,7 +202,7 @@ export default defineComponent({
     }
   },
 
-  components: { DropDownListV2, OnlyTextOption, MarkerTextOption, CheckList, Calendar }
+  components: { DropDownListV2, OnlyTextOption, MarkerTextOption, CheckList, Calendar, ExecutionTime }
 });
 </script>
 

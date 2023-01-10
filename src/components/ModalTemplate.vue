@@ -1,9 +1,3 @@
-<!-- <template>
-  <div @click="clickHandler" class="modal-window">
-    <div class="card tasks-scrollbar" ref=cardRef>
-    </div>
-  </div>
-</template> -->
 
 <script lang="ts">import { App, Component, defineComponent, h, resolveComponent, resolveDynamicComponent, VNode} from 'vue';
 import { services } from '@/main';

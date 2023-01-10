@@ -37,14 +37,14 @@
       </div>
     </div>
     <div class="flex-line">
-      <span class="title-font">Факт. время выполнения</span>
-      <span class="item-font" v-if="task.actualTime">{{ task.actualTime }}</span>
-      <span class="secondary-font undefined-color" v-else>Не указано</span>
-    </div>
-    <div class="flex-line">
       <span class="title-font">Срок выполнения</span>
       <span class="item-font" v-if="task.deadline">{{ task.deadline.dateStringOnly }}</span>
       <span class="secondary-font undefined-color" v-else>Не указан</span>
+    </div>
+    <div class="flex-line">
+      <span class="title-font">Факт. время выполнения</span>
+      <span class="item-font" v-if="task.actualTime">{{ task.actualTime.toFixed(0) }} ч.</span>
+      <span class="secondary-font undefined-color" v-else>Не указано</span>
     </div>
     <div class="flex-block">
       <span class="title-font">Этапы</span>

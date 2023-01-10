@@ -64,7 +64,7 @@ export class TaskFull implements ITaskFull{
       authorId: dto.contractor_id.toString(),
       contractorId: dto.contractor_id.toString(),
       description: dto.description,
-      actualTime: dto.actual_time,
+      actualTime: parseFloat(dto.actual_time ?? "0"),
       accepted: true,
       compleatedAt: new Date(),
       checkList: dto.stages.map(stage => CheckListItem.fromDto(stage)),

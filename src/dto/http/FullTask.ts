@@ -31,7 +31,7 @@ export interface IFullTaskDTOHttpPostResponse
     status_id: number,
     deadline: string,
     description: string,
-    actual_time: number,
+    actual_time: string,
   },
   stages: IStageDTOHttp[],
 }
@@ -51,6 +51,6 @@ export interface IFullTaskDTOHttpGetResponse
   status_name: string,
   deadline: string,
   description: string,
-  actual_time: number,
+  actual_time: string,
   stages: IStageDTOHttp[],
 }
