@@ -53,8 +53,8 @@
       </div>
       <span class="secondary-font undefined-color" v-else>Нет Этапов</span>
     </div>
-    <div class="buttons">
-      <button class="button edit" @click="openEdit">Редактировать</button>
+    <div class="buttons" :class="canEditTask ? '' : 'center'">
+      <button class="button edit" v-if="canEditTask" @click="openEdit">Редактировать</button>
       <button class="button close" @click="closeClick">Закрыть</button>
     </div>
   </div>
@@ -65,6 +65,7 @@ import { ICheckedListItem } from '@/interfaces/ICheckedListItem';
 import { ITaskFull } from '@/interfaces/ITaskFull';
 import { ITaskShort } from '@/interfaces/ITaskShort';
 import { services } from '@/main';
+import { TaskFull } from '@/view-models/TaskVM';
 import { devNull } from 'os';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { defineComponent, PropType } from 'vue';
@@ -108,6 +109,9 @@ export default defineComponent({
       stream$.complete();
 
       return stream$;
+    },
+    canEditTask(): boolean{
+      return this.task.contractorId == services.localStorageService.user.id;
     }
   },
   data() {
@@ -171,6 +175,9 @@ export default defineComponent({
     &.close {
       background-color: #D5D6D7;
     }
+  }
+  &.center{
+    justify-content: center;
   }
 }
 
