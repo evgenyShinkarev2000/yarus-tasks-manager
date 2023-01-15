@@ -6,7 +6,7 @@
    @remove="removeItem(index)"
    @switchChecked="switchChecked(index)">
   </CheckListItem>
-  <div class="add" v-if="mode === 'edit'">
+  <div class="add" v-if="canAddItem">
     <input class="input general-font" placeholder="Навзание этапа" ref="input" @input="inputHandler">
     <img class="add-btn" :class="isInputValid ? '' : 'disable'" src="@/assets/add-plus.png" @click="addItem">
   </div>

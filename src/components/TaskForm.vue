@@ -46,7 +46,7 @@
     </div>
     <div class="flex-block small-gap-block">
       <h4 class="h4-font">Этапы</h4>
-      <CheckList :items$="checkListItems$" :mode="'edit'"></CheckList>
+      <CheckList :items$="checkListItems$" :mode="appearance === 'new' ? 'init' : 'edit'"></CheckList>
     </div>
     <div class="flex-inline">
       <button class="modal-button confirm" :class="isFormValid ? '' : 'disable'" @click="confirmClick" :key="1">Подтвердить</button>
