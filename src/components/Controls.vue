@@ -12,10 +12,6 @@
         </button>
       </div>
     </div>
-    <!-- <ModalTemplate v-if="isCreateTask">
-      <TaskForm :task="{ projectId: selectedProject.id }" :appearance="'new'">
-      </TaskForm>
-    </ModalTemplate> -->
   </section>
 </template>
     

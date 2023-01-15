@@ -85,6 +85,9 @@ export default defineComponent({
   grid-template-columns: auto;
   grid-template-rows: auto auto;
   row-gap: calc(6 * var(--shpx));
+  &:hover{
+    box-shadow: 0 3px 5px 2px rgba(0, 0, 0, 0.25);
+  }
 
   .top {
     display: flex;
