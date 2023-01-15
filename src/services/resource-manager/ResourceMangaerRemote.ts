@@ -76,7 +76,7 @@ export class ResourceManagerRemote implements IResourceManager
     const taskDto: IFullTaskDTOHttpPutRequest = {
       actual_time: fullTaskNew.actualTime ?? 0,
       deadline: fullTaskNew.deadline.toSqlDate(),
-      description: fullTaskNew.description,
+      description: fullTaskNew.description?.trim().length > 0 ? fullTaskNew.description : "Описание",
       name: fullTaskNew.title === fullTaskOld.title ? undefined : fullTaskNew.title,
       priority_id: parseInt(fullTaskNew.priorityId),
       project_id: parseInt(fullTaskNew.projectId),

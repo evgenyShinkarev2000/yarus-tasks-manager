@@ -111,7 +111,7 @@ export default defineComponent({
       return stream$;
     },
     canEditTask(): boolean{
-      return this.task.contractorId == services.localStorageService.user.id;
+      return this.task.contractorId == services.localStorageService.user.id && this.task.statusId != "2";
     }
   },
   data() {

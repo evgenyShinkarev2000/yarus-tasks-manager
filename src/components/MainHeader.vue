@@ -40,6 +40,7 @@ export default defineComponent({
     exit(): void{
       services.permissionService.exit();
       this.$router.push({name: 'login'});
+      window.location.reload();
     }
   }
 })
