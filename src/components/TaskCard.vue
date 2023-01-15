@@ -1,7 +1,7 @@
 <template>
   <div class="host" @click="showFullTaskViewer">
     <div class="top">
-      <div class="label h4-font">{{ shortTask?.title }}.</div>
+      <div class="label h4-font">{{ shortTask?.title }}</div>
       <div class="marker-line" :class="markerColor"></div>
     </div>
     <div class="bottom">

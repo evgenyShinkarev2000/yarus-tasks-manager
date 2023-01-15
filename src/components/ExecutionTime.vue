@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <input class="input font" @input="inputHandler" :value="container.value" ref="inputRef"><span class="font">ч.</span>
+    <input class="input font" @input="inputHandler" :value="container.value ?? 0" ref="inputRef"><span class="font">ч.</span>
   </div>
 </template>
 
