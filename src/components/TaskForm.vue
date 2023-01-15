@@ -4,7 +4,8 @@
       <h3 class="h3-font">{{ appearance === "new" ? "Создание задачи" : "Редактирование задачи" }}</h3>
     </div>
     <div class="flex-inline">
-      <input class="text-input name general-font" type="text" placeholder="Введите название задачи" v-model="taskCopy.title">
+      <input class="text-input name general-font" :class="isTitleValid ? '' : 'invalid'" 
+      type="text" placeholder="Введите название задачи" v-model="taskCopy.title" @input="titleHandler">
     </div>
     <div class="flex-inline space">
       <h4 class="h4-font">Проект</h4>
@@ -48,7 +49,7 @@
       <CheckList :items$="checkListItems$" :mode="'edit'"></CheckList>
     </div>
     <div class="flex-inline">
-      <button class="modal-button confirm" @click="confirmClick" :key="1">Подтвердить</button>
+      <button class="modal-button confirm" :class="isFormValid ? '' : 'disable'" @click="confirmClick" :key="1">Подтвердить</button>
       <button class="modal-button cancel" @click="cancelClick" :key="2">Отмена</button>
     </div>
   </div>
@@ -161,11 +162,20 @@ export default defineComponent({
       deadLine$: new BehaviorSubject<Date | undefined>(taskCopy?.deadline.date),
       streams: [] as Subject<any>[],
       subscriptions: [] as Subscription[],
+      isTitleValid: taskCopy.title?.trim().length > 0,
+    }
+  },
+  computed:{
+    isFormValid(): boolean{
+      return this.isTitleValid;
     }
   },
   methods: {
     confirmClick(): void
     {
+      if (!this.isFormValid){
+        return;
+      }
       this.taskCopy.checkList = this.checkListItems$.value;
       this.taskCopy.deadline = new DateVM(this.deadLine$.value);
       this.taskCopy.projectId = this.projectsProvider.selected!.item.id;
@@ -196,6 +206,10 @@ export default defineComponent({
     cancelClick(): void
     {
       services.modalWindow.closeSignal$.next();
+    },
+    titleHandler(e: Event): void{
+      const input = e.target as HTMLInputElement;
+      this.isTitleValid = input?.value?.trim().length > 0;
     }
   },
 
@@ -294,6 +308,13 @@ export default defineComponent({
 input::placeholder,
 textarea::placeholder {
   @extend .placeholder-font;
+}
+
+.invalid{
+  border: 1px solid $red !important;
+}
+.disable{
+  opacity: 0.6;
 }
 </style>
 
