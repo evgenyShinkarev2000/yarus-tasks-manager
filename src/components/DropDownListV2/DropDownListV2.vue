@@ -4,10 +4,10 @@
       <slot name="option" :id-pair-name="selectedOption?.idPairName"></slot>
       <img class="icon" :class="isShowOptions ? 'rotate-180' : ''" src="@/assets/drop-down-icon.png">
     </div>
-    <div class="options" v-if="isShowOptions" ref="options">
-      <div class="option" :class="option.isSelected ? 'selected' : ''" v-for="option of options"
-        :option="option" :key="option.index" @click="switchSelected(option.index)">
-        <slot name="option" :id-pair-name="option.idPairName"></slot>
+    <div class="options" :class="isDisabled ? 'disabled' : 'active'" v-if="isShowOptions" ref="options">
+      <div class="option" :class="option.isSelected ? 'selected' : ''" v-for="option of options" :option="option"
+        :key="option.index" @click="switchSelected(option.index)">
+        <slot name="option" :id-pair-name="option.idPairName" :is-disabled="isDisabled"></slot>
       </div>
     </div>
   </div>
@@ -31,29 +31,35 @@ export default defineComponent({
       type: Boolean
     }
   },
-  created() {
-    if (!this.listProvider) {
+  created()
+  {
+    if (!this.listProvider)
+    {
       throw new Error();
     }
-    
+
     this.subscriptions.push(
-      this.listProvider.items$.subscribe(items => {
+      this.listProvider.items$.subscribe(items =>
+      {
         this.options = items;
       })
     );
     this.subscriptions.push(
-      this.listProvider.selected$.subscribe(selected => {
+      this.listProvider.selected$.subscribe(selected =>
+      {
         this.selectedOption = selected;
       })
     );
 
     document.addEventListener("click", this.closeAtClickOutside);
   },
-  unmounted() {
+  unmounted()
+  {
     this.subscriptions.forEach(s => s.unsubscribe());
     document.removeEventListener("click", this.closeAtClickOutside);
   },
-  data() {
+  data()
+  {
     return {
       options: [] as ReadonlyArray<IDropDownListOption>,
       subscriptions: [] as Subscription[],
@@ -62,35 +68,48 @@ export default defineComponent({
     };
   },
   methods: {
-    closeAtClickOutside(mouseEvent: MouseEvent): void {
-      if (!this.isShowOptions) {
+    closeAtClickOutside(mouseEvent: MouseEvent): void
+    {
+      if (!this.isShowOptions)
+      {
         return;
       }
       const head = this.$refs.head as HTMLElement;
       const options = this.$refs.options as HTMLElement;
-      if (!head || !options) {
+      if (!head || !options)
+      {
         return;
       }
-      if (!wasClickInside(head, mouseEvent) && !wasClickInside(options, mouseEvent)) {
+      if (!wasClickInside(head, mouseEvent) && !wasClickInside(options, mouseEvent))
+      {
         this.isShowOptions = false;
       }
     },
-    switchSelected(index: number): void {
+    switchSelected(index: number): void
+    {
+      if (this.isDisabled)
+      {
+        return;
+      }
       this.listProvider?.changeSelected(index);
     },
-    hideOptions(): void {
+    hideOptions(): void
+    {
       this.isShowOptions = false;
     },
-    showOptions(): void {
+    showOptions(): void
+    {
       this.isShowOptions = true;
     },
-    switchShowOptions(): void {
+    switchShowOptions(): void
+    {
       this.isShowOptions = !this.isShowOptions;
     }
   }
 });
 
-function wasClickInside(element: HTMLElement, mouseEvent: MouseEvent): boolean {
+function wasClickInside(element: HTMLElement, mouseEvent: MouseEvent): boolean
+{
   const position = element.getBoundingClientRect();
   return position.left <= mouseEvent.clientX
     && position.right >= mouseEvent.clientX
@@ -141,13 +160,20 @@ function wasClickInside(element: HTMLElement, mouseEvent: MouseEvent): boolean {
       padding-left: calc(16 * var(--swpx));
       display: flex;
       align-items: center;
-
       &.selected {
         background: #EFF0F1;
       }
-
-      &:hover {
-        background: #EFF0F1;
+    }
+    &.active{
+      .option{
+        &:hover {
+          background: #EFF0F1;
+        }
+      }
+    }
+    &.disabled{
+      .option{
+        cursor: not-allowed;
       }
     }
   }

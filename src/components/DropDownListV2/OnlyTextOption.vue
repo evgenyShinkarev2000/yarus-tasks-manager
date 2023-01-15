@@ -13,6 +13,10 @@ export default defineComponent({
     idPairName: {
       type: Object as PropType<IIdPairName>
     },
+    isDisabled:{
+      default: false,
+      type: Boolean,
+    }
   },
   computed: {
   },

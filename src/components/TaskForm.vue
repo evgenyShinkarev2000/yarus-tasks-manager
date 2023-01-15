@@ -15,9 +15,9 @@
         </template>
       </DropDownListV2>
     </div>
-    <div class="flex-inline space" @click.prevent="">
+    <div class="flex-inline space">
       <h4 class="h4-font">Исполнитель</h4>
-      <DropDownListV2 :list-provider="contractorsProvider">
+      <DropDownListV2 :list-provider="contractorsProvider" :is-disabled="true">
         <template #option="{ idPairName }">
           <OnlyTextOption :id-pair-name="idPairName"></OnlyTextOption>
         </template>
