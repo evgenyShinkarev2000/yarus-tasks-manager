@@ -54,8 +54,8 @@
       <span class="secondary-font undefined-color" v-else>Нет Этапов</span>
     </div>
     <div class="buttons" :class="canEditTask ? '' : 'center'">
-      <button class="button edit" v-if="canEditTask" @click="openEdit">Редактировать</button>
-      <button class="button close" @click="closeClick">Закрыть</button>
+      <button class="modal-button submit" v-if="canEditTask" @click="openEdit">Редактировать</button>
+      <button class="modal-button cansel" @click="closeClick">Закрыть</button>
     </div>
   </div>
 </template>
@@ -165,17 +165,6 @@ export default defineComponent({
   justify-self: stretch;
   gap: 5px;
   justify-content: space-between;
-  .button {
-    @extend .modal-button;
-
-    &.edit {
-      background-color: $light-blue;
-    }
-
-    &.close {
-      background-color: #D5D6D7;
-    }
-  }
   &.center{
     justify-content: center;
   }

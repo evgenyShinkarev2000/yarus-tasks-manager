@@ -49,8 +49,8 @@
       <CheckList :items$="checkListItems$" :mode="appearance === 'new' ? 'init' : 'edit'"></CheckList>
     </div>
     <div class="flex-inline">
-      <button class="modal-button confirm" :class="isFormValid ? '' : 'disable'" @click="confirmClick" :key="1">Подтвердить</button>
-      <button class="modal-button cancel" @click="cancelClick" :key="2">Отмена</button>
+      <button class="modal-button submit" :class="isFormValid ? '' : 'disable'" @click="confirmClick" :key="1">Подтвердить</button>
+      <button class="modal-button cansel" @click="cancelClick" :key="2">Отмена</button>
     </div>
   </div>
 </template>
@@ -253,14 +253,6 @@ export default defineComponent({
     line-height: 18px;
     font-family: 'Montserrat';
     color: #595959;
-  }
-
-  button.confirm {
-    background-color: $light-blue;
-  }
-
-  button.cancel {
-    background-color: #D5D6D7;
   }
 }
 

@@ -137,6 +137,9 @@ export default defineComponent({
       background-color: $light-blue;
       width: calc($column-width * var(--swpx));
       height: calc(48 * var(--shpx));
+      &:hover{
+        box-shadow: 0px 0px 1px 2px $light-blue-hovered;
+      }
     }
   }
 }
