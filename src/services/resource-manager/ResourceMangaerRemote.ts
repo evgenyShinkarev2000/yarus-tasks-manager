@@ -95,6 +95,7 @@ export class ResourceManagerRemote implements IResourceManager
 
   public addTask(fullTask: ITaskFull): Observable<ITaskFull>
   {
+    debugger;
     const taskDto: IFullTaskDTOHttpRequest = TaskFull.toDto(fullTask);
     taskDto.stages = taskDto.stages?.length ?? -1 > 0 ? taskDto.stages : undefined;
 
@@ -127,7 +128,16 @@ export class ResourceManagerRemote implements IResourceManager
  */
   public getContractorsByProject$(projectId: string): Observable<IUser[]>
   {
-    throw new Error("Method not implemented.");
+    return this._serverApi.getUsersByProject(projectId).pipe(
+      first(),
+      map((data:IServerAnswer<IUser[]>) => data.item ?? [this._localStorageService.user]),
+      map(users => users.map(user => {
+        return {
+          id: user.id.toString(),
+          name: user.name,
+          surname: user.surname,
+        }
+      })));
   }
 
   /**@deprecated */

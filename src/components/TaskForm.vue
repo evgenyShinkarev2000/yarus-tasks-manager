@@ -89,33 +89,34 @@ export default defineComponent({
         this.projectsProvider.changeSelected(projectTask?.index ?? 0);
       })
     );
-    // this.subscriptions.push(
-    //   this.projectsProvider.selected$.subscribe(selectedProjectOption =>
-    //   {
-    //     if (!selectedProjectOption)
-    //     {
-    //       this.contractorsProvider.setItems();
-    //     } else
-    //     {
-    //       services.resourceManager.getContractorsByProject$(selectedProjectOption.item.id).pipe(
-    //         take(1),
-    //       ).subscribe(contractors =>
-    //       {
-    //         this.contractorsProvider.setItems(contractors);
-    //         const contractorTask = this.contractorsProvider.findItemById(this.taskCopy?.contractorId) 
-    //           ?? this.contractorsProvider.findItemById(services.resourceManager.currentUser.id);
-    //         if (!contractorTask && this.taskCopy?.contractorId)
-    //         {
-    //           throw new Error("В задаче id исполнителя, которого не существует");
-    //         }
-    //         this.contractorsProvider.changeSelected(contractorTask?.index ?? 0);
-    //       });
-    //     }
-    //   })
-    // );
-    this.contractorsProvider.setItems(this.appearance === 'existed' 
-    ? [{id: this.task!.contractorId, name: this.task!.contractorName, surname: this.task!.contractorSurname}] 
-    : [services.localStorageService.user]);
+    this.subscriptions.push(
+      this.projectsProvider.selected$.subscribe(selectedProjectOption =>
+      {
+        if (!selectedProjectOption)
+        {
+          this.contractorsProvider.setItems();
+        } else
+        {
+          services.resourceManager.getContractorsByProject$(selectedProjectOption.item.id).pipe(
+            take(1),
+          ).subscribe(contractors =>
+          {
+            debugger;
+            this.contractorsProvider.setItems(contractors);
+            const contractorTask = this.contractorsProvider.findItemById(this.taskCopy?.contractorId) 
+              ?? this.contractorsProvider.findItemById(services.resourceManager.currentUser.id);
+            if (!contractorTask && this.taskCopy?.contractorId)
+            {
+              throw new Error("В задаче id исполнителя, которого не существует");
+            }
+            this.contractorsProvider.changeSelected(contractorTask?.index ?? 0);
+          });
+        }
+      })
+    );
+    // this.contractorsProvider.setItems(this.appearance === 'existed' 
+    // ? [{id: this.task!.contractorId, name: this.task!.contractorName, surname: this.task!.contractorSurname}] 
+    // : [services.localStorageService.user]);
 
     this.subscriptions.push(
       services.resourceManager.priorities$.subscribe(priorities =>
@@ -151,9 +152,15 @@ export default defineComponent({
     return {
       taskCopy,
       projectsProvider: new DropDownListProvider<IIdPairName>(idPairName => idPairName),
-      contractorsProvider: new DropDownListProvider((user: IUser) =>
-      {
-        return { id: user.id, name: `${user.surname} ${user.name}` };
+      // contractorsProvider: new DropDownListProvider((user: IUser) =>
+      // {
+      //   return { id: user.id, name: `${user.surname} ${user.name}` };
+      // }),
+      contractorsProvider: new DropDownListProvider((user: IUser) => {
+        return {
+          name:`${user.surname} ${user.name}`,
+          id: user.id,
+        }
       }),
       actualTimeContainer: {value: taskCopy.actualTime},
       prioritiesProvider: new DropDownListProvider<IIdPairName>(idPairName => idPairName),
@@ -176,9 +183,8 @@ export default defineComponent({
       this.taskCopy.contractorName = this.contractorsProvider.selected!.item.name;
       this.taskCopy.contractorSurname = this.contractorsProvider.selected!.item.surname;
       this.taskCopy.actualTime = this.actualTimeContainer.value;
-      //@ts-ignore
-      this.taskCopy.description = this.taskCopy.description?.trim() ? this.taskCopy.description : undefined;
-
+      // //@ts-ignore
+      // this.taskCopy.description = this.taskCopy.description?.trim() ? this.taskCopy.description : undefined;
       if (this.appearance === 'new'){
         services.resourceManager.addTask(this.taskCopy).pipe(first()).subscribe({
           next: () => {

@@ -6,6 +6,7 @@ import { IStageDTOHttp } from "@/dto/http/Stage";
 import { IStatusesDTOHttpResponse } from "@/dto/http/Statuses";
 import { ErrorInterceptor } from "@/interceptors/ErrorInterceptor";
 import { IServerAnswer } from "@/interfaces/IServeAnswer";
+import { IUser } from "@/interfaces/IUser";
 import { TaskFull } from "@/view-models/TaskVM";
 import axios, { Axios, AxiosResponse } from "axios";
 import { catchError, first, from, map, Observable, Subject, take } from "rxjs";
@@ -120,6 +121,15 @@ export class LocalServerApi implements IServerApi
   public putTask(fullTaskDto: IFullTaskDTOHttpPutRequest, projectId: number | string, taskId: number | string): Observable<IServerAnswer<undefined>>
   {
     return this.streamHelper(this._axios.put(`tasks/${projectId}/${taskId}`, fullTaskDto));
+  }
+
+  public getUsersByProject(projectId: string): Observable<IServerAnswer<IUser[]>>
+  {
+    const promise = this._axios.get("users/byProjects", {params: {
+      project_id: projectId,
+    }})
+    
+    return this.streamHelper(promise);
   }
 
   private getHelper<T>(route: string): Observable<IServerAnswer<T>>

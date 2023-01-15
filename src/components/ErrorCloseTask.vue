@@ -69,7 +69,9 @@ export default defineComponent({
       return true;
     },
     acceptClick(): void{
-      debugger;
+      if (!this.isTaskCopyComplete){
+        return;
+      }
       this.fullTaskCopy.checkList = this.checkList$.value;
       this.fullTaskCopy.actualTime = this.actualTimeContainer.value;
       services.resourceManager.putTask(this.fullTask, this.fullTaskCopy).pipe(first()).subscribe();

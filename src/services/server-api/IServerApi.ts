@@ -4,6 +4,7 @@ import { IProjectsDTOHttpResponse } from "@/dto/http/Projects";
 import { IShortTaskByProjectsDTOHttpResponse } from "@/dto/http/ShortTasksByProjects";
 import { IStatusesDTOHttpResponse } from "@/dto/http/Statuses";
 import { IServerAnswer } from "@/interfaces/IServeAnswer";
+import { IUser } from "@/interfaces/IUser";
 import { TaskFull } from "@/view-models/TaskVM";
 import { Axios } from "axios";
 import { Observable } from "rxjs";
@@ -19,4 +20,5 @@ export interface IServerApi{
   getFullTask(projectId: string, taskId: string): Observable<IServerAnswer<IFullTaskDTOHttpGetResponse>>;
   postTask(fullTaskDto: IFullTaskDTOHttpRequest): Observable<IServerAnswer<IFullTaskDTOHttpPostResponse>>; 
   putTask(fullTaskDto: IFullTaskDTOHttpPutRequest, projectId: number | string, taskId: number | string): Observable<IServerAnswer<undefined>>;
+  getUsersByProject(projectId: string): Observable<IServerAnswer<IUser[]>>;
 }

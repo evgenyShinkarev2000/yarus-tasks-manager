@@ -45,6 +45,7 @@ export class TaskFull implements ITaskFull{
       deadline: fullTask.deadline.toSqlDate(),
       description: fullTask.description,
       name: fullTask.title,
+      contractor_id: parseInt(fullTask.contractorId),
       priority_id: parseInt(fullTask.priorityId),
       project_id: parseInt(fullTask.projectId),
       stages: fullTask.checkList.map(i => CheckListItem.toDto(i)),

@@ -4,6 +4,7 @@ export interface IFullTaskDTOHttpRequest
 {
   project_id: number,
   priority_id: number,
+  contractor_id: number,
   name: string,
   stages?: string[],
   description: string,

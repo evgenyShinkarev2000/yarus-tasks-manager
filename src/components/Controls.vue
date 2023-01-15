@@ -111,7 +111,7 @@ export default defineComponent({
     createTaskClick(): void
     {
       services.modalWindow.showComponent$
-      .next(h(TaskForm, {task:{ projectId: this.selectedProject.id } as ITaskFull, appearance:"new"}));
+      .next(h(TaskForm, {task:{ projectId: this.selectedProject.id } as ITaskFull, appearance: "new"}));
     },
   }
 });
