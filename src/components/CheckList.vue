@@ -7,8 +7,8 @@
    @switchChecked="switchChecked(index)">
   </CheckListItem>
   <div class="add" v-if="mode === 'edit'">
-    <input class="input general-font" placeholder="Навзание этапа" ref="input">
-    <img class="add-btn" src="@/assets/add-plus.png" @click="addItem">
+    <input class="input general-font" placeholder="Навзание этапа" ref="input" @input="inputHandler">
+    <img class="add-btn" :class="isInputValid ? '' : 'disable'" src="@/assets/add-plus.png" @click="addItem">
   </div>
 </template>
 
@@ -41,15 +41,27 @@ export default defineComponent({
   {
     return {
       subscriptions: [] as Subscription[],
+      isInputValid: false,
+    }
+  },
+  computed: {
+    canAddItem(): boolean{
+      return this.mode === "edit" || this.mode === "init";
     }
   },
   methods: {
-    removeItem(index: number)
+    inputHandler(e: Event): void{
+      this.isInputValid = (e.target as HTMLInputElement).value?.trim().length > 0;
+    },
+    removeItem(index: number): void
     {
       this.items$?.value.splice(index, 1);
       this.items$?.next(this.items$?.value);
     },
     addItem(): void{
+      if (!this.isInputValid){
+        return;
+      }
       const input = this.$refs.input as HTMLInputElement;
       const items = this.items$!.value;
       const checkListItem: ICheckedListItem = {isClosed: false, name: input.value};
@@ -80,6 +92,9 @@ export default defineComponent({
   .add-btn {
     width: calc(12 * var(--swpx));
     margin-left: calc(8 * var(--swpx));
+    &.disable{
+      opacity: 0.6;
+    }
   }
 }
 

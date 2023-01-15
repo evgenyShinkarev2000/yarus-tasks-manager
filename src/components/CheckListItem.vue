@@ -1,9 +1,9 @@
 <template>
   <div class="check-list-item">
-    <input type="checkbox" :checked="checkListItem?.isClosed" v-if="mode === 'lock'" @click.prevent="">
-    <input type="checkbox" :checked="checkListItem?.isClosed" v-else @click="switchChecked">
+    <input type="checkbox" :checked="checkListItem?.isClosed" v-if:="canSwitchChecked"  @click="switchChecked">
+    <input type="checkbox" :checked="checkListItem?.isClosed" v-else @click.prevent="">
     <span class="font">{{ checkListItem?.name }}</span>
-    <img class="close-circle" src="@/assets/close-cirlce.png" v-if="mode === 'edit'" @click="remove">
+    <img class="close-circle" src="@/assets/close-cirlce.png" v-if="canRemoveItem" @click="remove">
   </div>
 </template>
 
@@ -19,9 +19,18 @@ export default defineComponent({
 
     }
   },
+  computed:{
+    canSwitchChecked(): boolean{
+      return this.mode === "check" || this.mode === "edit";
+    },
+    canRemoveItem(): boolean{
+      return this.mode === "edit" || this.mode === "init";
+    }
+  },
   props: {
     checkListItem: {
-      type: Object as PropType<ICheckedListItem>
+      type: Object as PropType<ICheckedListItem>,
+      required: true,
     },
     mode: {
       type: String as PropType<CheckItemMode>
@@ -31,10 +40,7 @@ export default defineComponent({
     remove(): void{
       this.$emit("remove");
     },
-    switchChecked(): void{
-      if (!this.checkListItem){
-        return;
-      }
+    switchChecked(e: Event): void{
       this.$emit("switchChecked");
     }
   },

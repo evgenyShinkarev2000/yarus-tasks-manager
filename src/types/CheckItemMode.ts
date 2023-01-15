@@ -1,1 +1,1 @@
-export type CheckItemMode = "lock" | "edit" | "check";
+export type CheckItemMode = "lock" | "edit" | "check" | "init";
